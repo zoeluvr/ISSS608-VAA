@@ -5,7 +5,10 @@ author: "Luo Zheng"
 
 ## Step-by-step Preparation
 
-123
+| No. | Step                                                                       | Screenshot                     |
+|--------|---------------------|-------------------------------|
+| 1\. | fhjakl fbnsj lakb cnszn jklds hjvksaj klfh gjakn vjak dsnlkj njskd lnv jsj | ![Caption](picture/step1.jpeg) |
+| 2\. | adjadsjfdskljfhjdak                                                        | ![Caption](picture/step2.jpeg) |
 
 ## Major Observations
 
