@@ -20,7 +20,7 @@ website:
 
 format:
   html:
-    theme: morph
+    theme: minty
     css: styles.css
     toc: true
 
