@@ -185,12 +185,12 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>2.</td>
-<td>Open Sheet 1. To make a 3*3 trellis diagram, first create a calculated field of index, then add the number of columns as a parameter and set current.</td>
+<td>Open Sheet 1. To make a 3*3 trellis diagram, first create a calculated field of index, then add the number of columns as a parameter and set current value as 3.</td>
 <td><img src="picture/S_2_1.png" class="img-fluid" alt="Caption"> <img src="picture/S_2_2.png" class="img-fluid" alt="Caption"></td>
 </tr>
 <tr class="odd">
 <td>3.</td>
-<td>Create the calculated fields “Columns” and “Rows” separately, and covert them to discrete.</td>
+<td>Create the calculated fields “Columns” and “Rows”. Write “IF [index] % [# of Columns] = 0 THEN [# of Columns] ELSE [index] % [# of Columns] END” and “INT(INT([index]-1)/[# of Columns])” in the description of columns and rows respectively.</td>
 <td><img src="picture/S_3_1.png" class="img-fluid" alt="Caption"> <img src="picture/S_3_2.png" class="img-fluid" alt="Caption"></td>
 </tr>
 <tr class="even">
@@ -200,7 +200,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>5.</td>
-<td>To separate the population into that of female and male, create a calculated field by using IIF( ). Choose “Males” and “Females” in [Sex] part respectively.</td>
+<td>To separate the population into that of female and male, create a calculated field by using “IIF([Sex]=”Males/Females”,[Population],0)“. Choose”Males” and “Females” in [Sex] part respectively.</td>
 <td><img src="picture/S_5.png" class="img-fluid" alt="Caption"></td>
 </tr>
 <tr class="even">
@@ -238,14 +238,26 @@ ul.task-list li input[type="checkbox"] {
 <td>Click “Format” in the tool bar and select “Font” to adjust the font size.</td>
 <td><img src="picture/S_12.png" class="img-fluid" alt="Caption"></td>
 </tr>
+<tr class="odd">
+<td>13.</td>
+<td>Right-click the a specific pyramid and select “Area..” under “Annotate” to manually add the label manually.</td>
+<td><img src="picture/S_13.png" class="img-fluid" alt="Caption"></td>
+</tr>
+<tr class="even">
+<td>14.</td>
+<td>Then the age-sex pyramid trellis is finished.</td>
+<td><img src="picture/S_14.png" class="img-fluid" alt="Caption"></td>
+</tr>
 </tbody>
 </table>
 </section>
 <section id="major-observations" class="level2">
 <h2 class="anchored" data-anchor-id="major-observations">Major Observations</h2>
-<p>Nine areas are selected according to their geometric location, which are, to be specific, north region, south region, central region, west region, east region, north-west region, north-east region, south-west region, and south-east region.</p>
-<p>In general, the age pyramids of all these nine regions show similar trend that wide in the middle and narrow at two sides, which can be explained that people at middle-age (25-69) are in the major part, and the elderly and the young child account for relatively small proportion. Meanwhile, it can also be achieved that the population of each gender is near, and show similar age distribution. Another matter that needs to be paid attention to is that the population aging is quite serious, which might be a potential threat of the future development.</p>
-<p>As for each separate region, it is obvious that the population of the eastern part and western part are higher compared with the central part. This is because the central part is the main metropolitan region and it is by natural chiefly commercial. Another interesting thing is that the population of the northern part mainly lies between 30 and 49 years old. This is probably because north Singapore is the newly-built digital distinct, and has many new technology firms, thus providing numerous opportunities for people at relatively young age, therefore resulting in the accumulation of them.</p>
+<p>Nine areas are selected according to their geometric location, which are, to be specific, north region, south region, central region, west region, east region, north-west region, north-east region, south-west region, and south-east region. Since the statistics only contain an extremely small population size in some border areas in Singapore (for example, Changi, western islands etc.), the analysis does not take these places into consideration.</p>
+<p>In general, the age-sex pyramids of all these nine regions show similar trend that wide in the middle and narrow at two sides, which can be explained that <strong>people at middle-age (25-69) are in the major part</strong>, and the elderly and the young child account for relatively small proportion. Meanwhile, it can also be achieved that <strong>the population of each gender is near</strong>, and show similar age distribution. Another issue that needs to be paid attention to is that all these <strong>population pyramids are in the constrictive type</strong>, which is the common feature of the developed country, representing that the population aging is quite serious, which might be a potential threat for future development.</p>
+<p>As for each separate region, it is obvious that <strong>the population of the eastern part and western part are higher compared with the central part</strong>. This may be caused by central part’s role as a main metropolitan region, where a large number a companies and shopping complex situate there and but less living quarters. Few residences are built here and the existing houses are expensive, therefore the population here is relatively small compared with other regions.</p>
+<p>Another interesting thing is that <strong>the young population of the northern part (Punggol) is much higher than that of the elderly</strong>. Its poplulation mainly lies between 30 and 49 years old. This is probably because north Singapore is the newly-built digital distinct, and has many new technology firms, thus providing numerous opportunities for people at relatively young age, and resulting in the accumulation of them.</p>
+<p>To summarize, the population of Singapore mainly shows a constructive trend, and the aging problem is quite severe, so this could be an alarm for increasing births and welcoming high quality work forces from other countries.</p>
 
 
 </section>
