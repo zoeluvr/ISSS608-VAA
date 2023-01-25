@@ -2,3 +2,57 @@
 title: "Take-home Exercise2"
 author: "Luo Zheng"
 ---
+
+1.  Overview
+
+In the Take-home Exercise 2
+
+2.  Getting Started
+
+Installing and loading required packages
+
+```{r}
+pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr) 
+```
+
+Importing data
+
+By using the below code chunk, the respopagesextod2022.csv is loaded under the R environment.
+
+```{r}
+# read csv file
+pop <- read_csv("data/respopagesextod2022.csv")
+head(pop)
+```
+
+```{r}
+filter_pop <- pop[which((pop$PA == 'Bedok') | (pop$PA == 'Bukit Batok') | (pop$PA == 'Hougang') | (pop$PA == 'Jurong West') | (pop$PA == 'Punggol') | (pop$PA == 'Sengkang') | (pop$PA == 'Tampines') | (pop$PA == 'Woodlands') | (pop$PA == 'Yishun')),]
+head(filter_pop)
+```
+
+```{r}
+freq_pop <- filter_pop %>%
+  group_by(`AG`, `Sex`, `PA`) %>%
+  summarise('Count'= sum(`Pop`)) %>%
+  ungroup()
+head(freq_pop)
+```
+
+```{r}
+order <- c("0_to_4", "5_to_9", "10_to_14", "15_to_19", "20_to_24", "25_to_29", "30_to_34", "35_to_39", "40_to_44", "45_to_49", "50_to_54", "55_to_59", "60_to_64", "65_to_69", "70_to_74", "75_to_79", "80_to_84", "85_to_89", "90_and_over")
+
+sorted_pop <- freq_pop %>%
+  mutate(AG =  factor(AG, levels = order)) %>%
+  arrange(AG)
+
+head(sorted_pop)
+```
+
+```{r}
+p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count), y = AG, fill = Sex)) + geom_col() + facet_wrap(~PA, nrow = 3) + scale_x_continuous(breaks = seq(-150000, 150000, 50000), labels = paste0(as.character(c(seq(150, 0, -50), seq(50, 150, 50))),"k")) +
+  labs (x = "Population", y = "Age", title='Singapore Age-Sex Population Pyramid 2022') +
+  theme_bw() +
+  theme(axis.ticks.y = element_blank()) +
+  scale_fill_manual(values = c("Males" = "lightblue", "Females" = "lightpink"))
+p
+```
