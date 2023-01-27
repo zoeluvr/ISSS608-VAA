@@ -89,6 +89,8 @@ p
 
 ### 3.2.1 Critic
 
+The original trellis is listed blow. ![original trellis](picture/original_trellis.png){fig-align="center"}
+
 **Clarity:**
 
 -   Adopt a 3\*3 trellis, which leaves adequate space to show data in detail. Since the graph is not compressed in the horizon, the population distribution is clearly shown to the audience.
@@ -158,5 +160,5 @@ p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count)
   theme(axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Males" = "dodgerblue3", "Females" = "brown3")) 
 p
 ```
-The final downloaded version is shown below:
-![trellis](picture/trellis.png){fig-align="center"}
+
+The final downloaded version is shown below: ![trellis](picture/trellis.png){fig-align="center"}
