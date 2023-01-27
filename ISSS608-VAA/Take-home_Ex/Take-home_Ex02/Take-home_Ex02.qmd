@@ -1,23 +1,27 @@
 ---
 title: "Take-home Exercise2"
-author: "Luo Zheng"
+subtitle: Assessment and remaking peers original work of Singapore Age-sex Pyramids, 2022
+author: "Luo Zheng" 
+date: "`r Sys.Date()`"
 ---
 
-1.  Overview
+# 1. Overview
 
-In the Take-home Exercise 2
+Take-home exercise 2 is based on the take-home exercise 1 submission made by a classmate. Assessment of peer work will be given in terms of clarity and aesthetics, and the original work will be remade by using the data visualization skills learnt in Lesson 1 and 2.
 
-2.  Getting Started
+The trellis in take-home exercise is created by Tableau, and in this part, R and appropriate R packages will be adopted to provide alternative solutions.
 
-Installing and loading required packages
+# 2. Data Preparation
+
+As all the students in the class are asked to use the uniform data set, here the required csv. File and R packages are loaded in advance. The necessary R packages in this exercise includes: tidyverse, ggplot2, dplyr.
+
+**Installing and loading R packages:**
 
 ```{r}
 pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr) 
 ```
 
-Importing data
-
-By using the below code chunk, the respopagesextod2022.csv is loaded under the R environment.
+**Importing data:**
 
 ```{r}
 # read csv file
@@ -25,12 +29,102 @@ pop <- read_csv("data/respopagesextod2022.csv")
 head(pop)
 ```
 
+# 3. Visualization Critique and Remake
+
+The take-home exercise 1 contains the age-sex pyramid of Singapore in at least 9 planning areas, which indicates that most students include 9 pyramids in their submissions. The single pyramid and its combination will be reviewed in this part in terms of clarity and aesthetics.
+
+## 3.1 Single Pyramid
+
+As there are 9 age-sex pyramids in the same structure, here the pyramid of Hougang is selected as an example. ![Original Hougang](picture/original_Hougang.png){fig-align="center"}
+
+### 3.1.1 Critique
+
+**Clarity:**
+
+-   The graph is acceptable in terms of the general layout, as the number of female and male in Hougang is displayed. Looking at the graph, audience are able to grasp the major age and gender group in Hougang.
+
+-   Y-axis label 'AG' is vague, and the use of an abbreviation may not be appropriate for a label. The height of the Y-axis can be adjusted since too much information overlap together.
+
+-   X-axis does not mention what is 'female' and 'male' refer to. In some circumstances, age-sex pyramids may also adopt the percentage in X-axis, therefore more specific information should be given.
+
+-   The setting of the number label lacks a pattern. The author labels the extremely high and low numbers, but because of the inappropriate size of the number and the bar, it is hard for the audience to identify which bar the number indicates. Since the age-sex pyramid mainly focuses on the distribution trend and not the exact number, the specific number label can be removed.
+
+**Aesthetics:**
+
+-   The height and width of the graph are a little unbalanced.
+
+-   Colors chosen show a contrast of different gender and are readable to the audience.
+
+-   Clear white background avoids distractions.
+
+### 3.1.2 Remake
+
+Based on the problems mentioned above, a single age-sex pyramid is remade. (step-by-step methods will be given in the remake of the trellis)
+
 ```{r}
+filter_pop <- pop[which((pop$PA == 'Hougang')),]
+head(filter_pop)
+
+freq_pop <- filter_pop %>%
+  group_by(`AG`, `Sex`, `PA`) %>%
+  summarise('Count'= sum(`Pop`)) %>%
+  ungroup()
+head(freq_pop)
+
+order <- c("0_to_4", "5_to_9", "10_to_14", "15_to_19", "20_to_24", "25_to_29", "30_to_34", "35_to_39", "40_to_44", "45_to_49", "50_to_54", "55_to_59", "60_to_64", "65_to_69", "70_to_74", "75_to_79", "80_to_84", "85_to_89", "90_and_over")
+
+sorted_pop <- freq_pop %>%
+  mutate(AG =  factor(AG, levels = order)) %>%
+  arrange(AG)
+
+head(sorted_pop)
+
+p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count), y = AG, fill = Sex)) + geom_col() + scale_x_continuous(breaks = c(-10000, -5000, 0, 5000, 10000), labels = paste0(c(10, 5, 0, 5, 10),"k")) + labs (x = "Population", y = "Age", title='Hougang Age-Sex Population Pyramid 2022') +
+  theme_bw() + theme(plot.title = element_text(size=12,hjust=0.5)) +
+  theme(axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Males" = "dodgerblue3", "Females" = "brown3")) 
+p
+```
+
+## 3.2 Trellis of Pyramids
+
+### 3.2.1 Critic
+
+**Clarity:**
+
+-   Adopt a 3\*3 trellis, which leaves adequate space to show data in detail. Since the graph is not compressed in the horizon, the population distribution is clearly shown to the audience.
+
+-   Too much repetition of "Age-sex Pyramid" in the titles, and there is no need to present "Trellis Display" in the main title as the structure can be seen from the chart.
+
+**Aesthetics:**
+
+-   Y-axis are redundant and can be combined and put in the leftmost column.
+
+-   The sizes of the bars are inconsistent (e.g. the bars of Hougang and Woodlands are thinner than others).
+
+### 3.2.2 Proposed Design
+
+A scratch of improved design is shown below to avoid redundancy in the trellis. ![Scratch](picture/scratch.jpeg){fig-align="center"}
+
+### 3.2.3 Remake
+
+In this part, steps will be given to show how to make an age-sex pyramid trellis by using RStudio.
+
+**Filter out desired areas**
+
+As the csv.file has already been uploaded under the R environment and renamed as "pop", the filter command is then adopted to filter out the needed areas. Here the areas include: Ang Mo Kio, Bedok, Bishan, Clementi, Downtown Core, Geylang, Outram, Hougang, and Woodlands. After selecting, this data set is renamed as "filter pop".
+
+```{r}
+#| eval: false
 filter_pop <- pop[which((pop$PA == 'Ang Mo Kio') | (pop$PA == 'Bedok') | (pop$PA == 'Bishan') | (pop$PA == 'Clementi') | (pop$PA == 'Downtown Core') | (pop$PA == 'Geylang') | (pop$PA == 'Outram') | (pop$PA == 'Hougang') | (pop$PA == 'Woodlands')),]
 head(filter_pop)
 ```
 
+**Compute the frequency count by age, sex, and areas**
+
+By using the *group_by()* and *summarise ()* commands in dplyr package, the total population in Singapore in the categories of age, sex, and areas are counted.
+
 ```{r}
+#| eval: false
 freq_pop <- filter_pop %>%
   group_by(`AG`, `Sex`, `PA`) %>%
   summarise('Count'= sum(`Pop`)) %>%
@@ -38,7 +132,12 @@ freq_pop <- filter_pop %>%
 head(freq_pop)
 ```
 
+**Sort age group**
+
+Since sorting the data in age group by default could cause errors (e.g. 10_to_14 comes before 5_to_9), the sorting order of the original dataset is used by introducing arrange( ).
+
 ```{r}
+#| eval: false
 order <- c("0_to_4", "5_to_9", "10_to_14", "15_to_19", "20_to_24", "25_to_29", "30_to_34", "35_to_39", "40_to_44", "45_to_49", "50_to_54", "55_to_59", "60_to_64", "65_to_69", "70_to_74", "75_to_79", "80_to_84", "85_to_89", "90_and_over")
 
 sorted_pop <- freq_pop %>%
@@ -48,11 +147,16 @@ sorted_pop <- freq_pop %>%
 head(sorted_pop)
 ```
 
+**Creating trellis plot**
+
+To make the graphs of each area into 3\*3 trellis, the *facet_wrap()* is used. As we want to split 9 graphs according to different regions, *\~PA* is put in. By adding *nrow = 3* in the facet_wrap, each row is set to contain 3 age-sex pyramids.
+
 ```{r}
-p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count), y = AG, fill = Sex)) + geom_col() + scale_x_continuous(breaks = c(-10000, -5000, 0, 5000, 10000), labels = paste0(c(10, 5, 0, 5, 10),"k")) + labs (x = "Population", y = "Age", title='Singapore Age-Sex Population Pyramid 2022') +
+#| eval: false
+p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count), y = AG, fill = Sex)) + geom_col() + facet_wrap(~PA, nrow = 3) + scale_x_continuous(breaks = c(-10000, -5000, 0, 5000, 10000), labels = paste0(c(10, 5, 0, 5, 10),"k")) + labs (x = "Population", y = "Age", title='Singapore Age-Sex Population Pyramids in 9 Areas, 2022') +
   theme_bw() + theme(plot.title = element_text(size=12,hjust=0.5)) +
   theme(axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Males" = "dodgerblue3", "Females" = "brown3")) 
 p
 ```
-
-![Caption](picture/finished_image.png){fig-align="center"}
+The final downloaded version is shown below:
+![trellis](picture/trellis.png){fig-align="center"}

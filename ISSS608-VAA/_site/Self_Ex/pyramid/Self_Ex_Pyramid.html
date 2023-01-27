@@ -252,18 +252,18 @@ dbl (2): Pop, Time
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>filter_pop <span class="ot">&lt;-</span> pop[<span class="fu">which</span>((pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bedok'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bukit Batok'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Hougang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Jurong West'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Punggol'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Sengkang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Tampines'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Woodlands'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Yishun'</span>)),]</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>filter_pop <span class="ot">&lt;-</span> pop[<span class="fu">which</span>((pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Hougang'</span>)),]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(filter_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 7
-  PA    SZ       AG     Sex   TOD                                      Pop  Time
-  &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                                  &lt;dbl&gt; &lt;dbl&gt;
-1 Bedok Bayshore 0_to_4 Males HDB 1- and 2-Room Flats                    0  2022
-2 Bedok Bayshore 0_to_4 Males HDB 3-Room Flats                           0  2022
-3 Bedok Bayshore 0_to_4 Males HDB 4-Room Flats                           0  2022
-4 Bedok Bayshore 0_to_4 Males HDB 5-Room and Executive Flats             0  2022
-5 Bedok Bayshore 0_to_4 Males HUDC Flats (excluding those privatise…     0  2022
-6 Bedok Bayshore 0_to_4 Males Condominiums and Other Apartments        150  2022</code></pre>
+  PA      SZ                   AG     Sex   TOD                        Pop  Time
+  &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt;
+1 Hougang Defu Industrial Park 0_to_4 Males HDB 1- and 2-Room Flats      0  2022
+2 Hougang Defu Industrial Park 0_to_4 Males HDB 3-Room Flats             0  2022
+3 Hougang Defu Industrial Park 0_to_4 Males HDB 4-Room Flats             0  2022
+4 Hougang Defu Industrial Park 0_to_4 Males HDB 5-Room and Executiv…     0  2022
+5 Hougang Defu Industrial Park 0_to_4 Males HUDC Flats (excluding t…     0  2022
+6 Hougang Defu Industrial Park 0_to_4 Males Condominiums and Other …     0  2022</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -278,14 +278,14 @@ dbl (2): Pop, Time
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
-  AG     Sex     PA          Count
-  &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-1 0_to_4 Females Bedok        4970
-2 0_to_4 Females Bukit Batok  4400
-3 0_to_4 Females Hougang      4430
-4 0_to_4 Females Jurong West  4820
-5 0_to_4 Females Punggol      6940
-6 0_to_4 Females Sengkang     6900</code></pre>
+  AG       Sex     PA      Count
+  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;
+1 0_to_4   Females Hougang  4430
+2 0_to_4   Males   Hougang  4520
+3 10_to_14 Females Hougang  4920
+4 10_to_14 Males   Hougang  4910
+5 15_to_19 Females Hougang  5190
+6 15_to_19 Males   Hougang  5410</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -298,22 +298,21 @@ dbl (2): Pop, Time
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sorted_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
-  AG     Sex     PA          Count
-  &lt;fct&gt;  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-1 0_to_4 Females Bedok        4970
-2 0_to_4 Females Bukit Batok  4400
-3 0_to_4 Females Hougang      4430
-4 0_to_4 Females Jurong West  4820
-5 0_to_4 Females Punggol      6940
-6 0_to_4 Females Sengkang     6900</code></pre>
+  AG       Sex     PA      Count
+  &lt;fct&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;
+1 0_to_4   Females Hougang  4430
+2 0_to_4   Males   Hougang  4520
+3 5_to_9   Females Hougang  4960
+4 5_to_9   Males   Hougang  4880
+5 10_to_14 Females Hougang  4920
+6 10_to_14 Males   Hougang  4910</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sorted_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">ifelse</span>(Sex <span class="sc">==</span> <span class="st">"Males"</span>, <span class="at">yes =</span> <span class="sc">-</span>Count, <span class="at">no =</span> Count), <span class="at">y =</span> AG, <span class="at">fill =</span> Sex)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>PA, <span class="at">nrow =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10000</span>, <span class="sc">-</span><span class="dv">5000</span>, <span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>), <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>),<span class="st">"k"</span>)) <span class="sc">+</span> <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Population"</span>, <span class="at">y =</span> <span class="st">"Age"</span>, <span class="at">title=</span><span class="st">'Singapore Age-Sex Population Pyramid 2022'</span>) <span class="sc">+</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Males"</span> <span class="ot">=</span> <span class="st">"dodgerblue3"</span>, <span class="st">"Females"</span> <span class="ot">=</span> <span class="st">"brown3"</span>))</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sorted_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">ifelse</span>(Sex <span class="sc">==</span> <span class="st">"Males"</span>, <span class="at">yes =</span> <span class="sc">-</span>Count, <span class="at">no =</span> Count), <span class="at">y =</span> AG, <span class="at">fill =</span> Sex)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>PA, <span class="at">nrow =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10000</span>, <span class="sc">-</span><span class="dv">5000</span>, <span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>), <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>),<span class="st">"k"</span>)) <span class="sc">+</span> <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Population"</span>, <span class="at">y =</span> <span class="st">"Age"</span>, <span class="at">title=</span><span class="st">'Hougang Age-Sex Population Pyramid 2022'</span>) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>,<span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Males"</span> <span class="ot">=</span> <span class="st">"dodgerblue3"</span>, <span class="st">"Females"</span> <span class="ot">=</span> <span class="st">"brown3"</span>)) </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Self_Ex_Pyramid_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>

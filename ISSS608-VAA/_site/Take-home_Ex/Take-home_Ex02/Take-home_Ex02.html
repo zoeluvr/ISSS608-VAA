@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Luo Zheng">
+<meta name="dcterms.date" content="2023-01-27">
 
 <title>ISSS608-VAA - Take-home Exercise2</title>
 <style>
@@ -194,7 +195,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1. Overview</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">2. Data Preparation</a></li>
+  <li><a href="#visualization-critique-and-remake" id="toc-visualization-critique-and-remake" class="nav-link" data-scroll-target="#visualization-critique-and-remake">3. Visualization Critique and Remake</a>
+  <ul class="collapse">
+  <li><a href="#single-pyramid" id="toc-single-pyramid" class="nav-link" data-scroll-target="#single-pyramid">3.1 Single Pyramid</a>
+  <ul class="collapse">
+  <li><a href="#critique" id="toc-critique" class="nav-link" data-scroll-target="#critique">3.1.1 Critique</a></li>
+  <li><a href="#remake" id="toc-remake" class="nav-link" data-scroll-target="#remake">3.1.2 Remake</a></li>
+  </ul></li>
+  <li><a href="#trellis-of-pyramids" id="toc-trellis-of-pyramids" class="nav-link" data-scroll-target="#trellis-of-pyramids">3.2 Trellis of Pyramids</a>
+  <ul class="collapse">
+  <li><a href="#critic" id="toc-critic" class="nav-link" data-scroll-target="#critic">3.2.1 Critic</a></li>
+  <li><a href="#proposed-design" id="toc-proposed-design" class="nav-link" data-scroll-target="#proposed-design">3.2.2 Proposed Design</a></li>
+  <li><a href="#remake-1" id="toc-remake-1" class="nav-link" data-scroll-target="#remake-1">3.2.3 Remake</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -202,6 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Take-home Exercise2</h1>
+<p class="subtitle lead">Assessment and remaking peers original work of Singapore Age-sex Pyramids, 2022</p>
 </div>
 
 
@@ -215,6 +238,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
   </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 27, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -222,19 +251,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<ol type="1">
-<li>Overview</li>
-</ol>
-<p>In the Take-home Exercise 2</p>
-<ol start="2" type="1">
-<li>Getting Started</li>
-</ol>
-<p>Installing and loading required packages</p>
+<section id="overview" class="level1">
+<h1>1. Overview</h1>
+<p>Take-home exercise 2 is based on the take-home exercise 1 submission made by a classmate. Assessment of peer work will be given in terms of clarity and aesthetics, and the original work will be remade by using the data visualization skills learnt in Lesson 1 and 2.</p>
+<p>The trellis in take-home exercise is created by Tableau, and in this part, R and appropriate R packages will be adopted to provide alternative solutions.</p>
+</section>
+<section id="data-preparation" class="level1">
+<h1>2. Data Preparation</h1>
+<p>As all the students in the class are asked to use the uniform data set, here the required csv. File and R packages are loaded in advance. The necessary R packages in this exercise includes: tidyverse, ggplot2, dplyr.</p>
+<p><strong>Installing and loading R packages:</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Importing data</p>
-<p>By using the below code chunk, the respopagesextod2022.csv is loaded under the R environment.</p>
+<p><strong>Importing data:</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read csv file</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/respopagesextod2022.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -261,22 +290,46 @@ dbl (2): Pop, Time
 6 Ang Mo Kio Ang Mo Kio Town Centre 0_to_4 Males Condominiums and O…    50  2022</code></pre>
 </div>
 </div>
+</section>
+<section id="visualization-critique-and-remake" class="level1">
+<h1>3. Visualization Critique and Remake</h1>
+<p>The take-home exercise 1 contains the age-sex pyramid of Singapore in at least 9 planning areas, which indicates that most students include 9 pyramids in their submissions. The single pyramid and its combination will be reviewed in this part in terms of clarity and aesthetics.</p>
+<section id="single-pyramid" class="level2">
+<h2 class="anchored" data-anchor-id="single-pyramid">3.1 Single Pyramid</h2>
+<p>As there are 9 age-sex pyramids in the same structure, here the pyramid of Hougang is selected as an example. <img src="picture/original_Hougang.png" class="img-fluid" data-fig-align="center" alt="Original Hougang"></p>
+<section id="critique" class="level3">
+<h3 class="anchored" data-anchor-id="critique">3.1.1 Critique</h3>
+<p><strong>Clarity:</strong></p>
+<ul>
+<li><p>The graph is acceptable in terms of the general layout, as the number of female and male in Hougang is displayed. Looking at the graph, audience are able to grasp the major age and gender group in Hougang.</p></li>
+<li><p>Y-axis label ‘AG’ is vague, and the use of an abbreviation may not be appropriate for a label. The height of the Y-axis can be adjusted since too much information overlap together.</p></li>
+<li><p>X-axis does not mention what is ‘female’ and ‘male’ refer to. In some circumstances, age-sex pyramids may also adopt the percentage in X-axis, therefore more specific information should be given.</p></li>
+<li><p>The setting of the number label lacks a pattern. The author labels the extremely high and low numbers, but because of the inappropriate size of the number and the bar, it is hard for the audience to identify which bar the number indicates. Since the age-sex pyramid mainly focuses on the distribution trend and not the exact number, the specific number label can be removed.</p></li>
+</ul>
+<p><strong>Aesthetics:</strong></p>
+<ul>
+<li><p>The height and width of the graph are a little unbalanced.</p></li>
+<li><p>Colors chosen show a contrast of different gender and are readable to the audience.</p></li>
+<li><p>Clear white background avoids distractions.</p></li>
+</ul>
+</section>
+<section id="remake" class="level3">
+<h3 class="anchored" data-anchor-id="remake">3.1.2 Remake</h3>
+<p>Based on the problems mentioned above, a single age-sex pyramid is remade. (step-by-step methods will be given in the remake of the trellis)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>filter_pop <span class="ot">&lt;-</span> pop[<span class="fu">which</span>((pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bedok'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bukit Batok'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Hougang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Jurong West'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Punggol'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Sengkang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Tampines'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Woodlands'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Yishun'</span>)),]</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>filter_pop <span class="ot">&lt;-</span> pop[<span class="fu">which</span>((pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Hougang'</span>)),]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(filter_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 7
-  PA    SZ       AG     Sex   TOD                                      Pop  Time
-  &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                                  &lt;dbl&gt; &lt;dbl&gt;
-1 Bedok Bayshore 0_to_4 Males HDB 1- and 2-Room Flats                    0  2022
-2 Bedok Bayshore 0_to_4 Males HDB 3-Room Flats                           0  2022
-3 Bedok Bayshore 0_to_4 Males HDB 4-Room Flats                           0  2022
-4 Bedok Bayshore 0_to_4 Males HDB 5-Room and Executive Flats             0  2022
-5 Bedok Bayshore 0_to_4 Males HUDC Flats (excluding those privatise…     0  2022
-6 Bedok Bayshore 0_to_4 Males Condominiums and Other Apartments        150  2022</code></pre>
+  PA      SZ                   AG     Sex   TOD                        Pop  Time
+  &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt;
+1 Hougang Defu Industrial Park 0_to_4 Males HDB 1- and 2-Room Flats      0  2022
+2 Hougang Defu Industrial Park 0_to_4 Males HDB 3-Room Flats             0  2022
+3 Hougang Defu Industrial Park 0_to_4 Males HDB 4-Room Flats             0  2022
+4 Hougang Defu Industrial Park 0_to_4 Males HDB 5-Room and Executiv…     0  2022
+5 Hougang Defu Industrial Park 0_to_4 Males HUDC Flats (excluding t…     0  2022
+6 Hougang Defu Industrial Park 0_to_4 Males Condominiums and Other …     0  2022</code></pre>
 </div>
-</div>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>freq_pop <span class="ot">&lt;-</span> filter_pop <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="st">`</span><span class="at">AG</span><span class="st">`</span>, <span class="st">`</span><span class="at">Sex</span><span class="st">`</span>, <span class="st">`</span><span class="at">PA</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">'Count'</span><span class="ot">=</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
@@ -288,17 +341,15 @@ dbl (2): Pop, Time
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
-  AG     Sex     PA          Count
-  &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-1 0_to_4 Females Bedok        4970
-2 0_to_4 Females Bukit Batok  4400
-3 0_to_4 Females Hougang      4430
-4 0_to_4 Females Jurong West  4820
-5 0_to_4 Females Punggol      6940
-6 0_to_4 Females Sengkang     6900</code></pre>
+  AG       Sex     PA      Count
+  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;
+1 0_to_4   Females Hougang  4430
+2 0_to_4   Males   Hougang  4520
+3 10_to_14 Females Hougang  4920
+4 10_to_14 Males   Hougang  4910
+5 15_to_19 Females Hougang  5190
+6 15_to_19 Males   Hougang  5410</code></pre>
 </div>
-</div>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0_to_4"</span>, <span class="st">"5_to_9"</span>, <span class="st">"10_to_14"</span>, <span class="st">"15_to_19"</span>, <span class="st">"20_to_24"</span>, <span class="st">"25_to_29"</span>, <span class="st">"30_to_34"</span>, <span class="st">"35_to_39"</span>, <span class="st">"40_to_44"</span>, <span class="st">"45_to_49"</span>, <span class="st">"50_to_54"</span>, <span class="st">"55_to_59"</span>, <span class="st">"60_to_64"</span>, <span class="st">"65_to_69"</span>, <span class="st">"70_to_74"</span>, <span class="st">"75_to_79"</span>, <span class="st">"80_to_84"</span>, <span class="st">"85_to_89"</span>, <span class="st">"90_and_over"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>sorted_pop <span class="ot">&lt;-</span> freq_pop <span class="sc">%&gt;%</span></span>
@@ -308,33 +359,87 @@ dbl (2): Pop, Time
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sorted_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
-  AG     Sex     PA          Count
-  &lt;fct&gt;  &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-1 0_to_4 Females Bedok        4970
-2 0_to_4 Females Bukit Batok  4400
-3 0_to_4 Females Hougang      4430
-4 0_to_4 Females Jurong West  4820
-5 0_to_4 Females Punggol      6940
-6 0_to_4 Females Sengkang     6900</code></pre>
+  AG       Sex     PA      Count
+  &lt;fct&gt;    &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;
+1 0_to_4   Females Hougang  4430
+2 0_to_4   Males   Hougang  4520
+3 5_to_9   Females Hougang  4960
+4 5_to_9   Males   Hougang  4880
+5 10_to_14 Females Hougang  4920
+6 10_to_14 Males   Hougang  4910</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sorted_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">ifelse</span>(Sex <span class="sc">==</span> <span class="st">"Males"</span>, <span class="at">yes =</span> <span class="sc">-</span>Count, <span class="at">no =</span> Count), <span class="at">y =</span> AG, <span class="at">fill =</span> Sex)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>PA, <span class="at">nrow =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10000</span>, <span class="sc">-</span><span class="dv">5000</span>, <span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>), <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>),<span class="st">"k"</span>)) <span class="sc">+</span> <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Population"</span>, <span class="at">y =</span> <span class="st">"Age"</span>, <span class="at">title=</span><span class="st">'Singapore Age-Sex Population Pyramid 2022'</span>) <span class="sc">+</span></span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sorted_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">ifelse</span>(Sex <span class="sc">==</span> <span class="st">"Males"</span>, <span class="at">yes =</span> <span class="sc">-</span>Count, <span class="at">no =</span> Count), <span class="at">y =</span> AG, <span class="at">fill =</span> Sex)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10000</span>, <span class="sc">-</span><span class="dv">5000</span>, <span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>), <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>),<span class="st">"k"</span>)) <span class="sc">+</span> <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Population"</span>, <span class="at">y =</span> <span class="st">"Age"</span>, <span class="at">title=</span><span class="st">'Hougang Age-Sex Population Pyramid 2022'</span>) <span class="sc">+</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>,<span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Males"</span> <span class="ot">=</span> <span class="st">"dodgerblue3"</span>, <span class="st">"Females"</span> <span class="ot">=</span> <span class="st">"brown3"</span>)) </span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="picture/finished_image.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Caption</figcaption><p></p>
-</figure>
+</section>
+</section>
+<section id="trellis-of-pyramids" class="level2">
+<h2 class="anchored" data-anchor-id="trellis-of-pyramids">3.2 Trellis of Pyramids</h2>
+<section id="critic" class="level3">
+<h3 class="anchored" data-anchor-id="critic">3.2.1 Critic</h3>
+<p><strong>Clarity:</strong></p>
+<ul>
+<li><p>Adopt a 3*3 trellis, which leaves adequate space to show data in detail. Since the graph is not compressed in the horizon, the population distribution is clearly shown to the audience.</p></li>
+<li><p>Too much repetition of “Age-sex Pyramid” in the titles, and there is no need to present “Trellis Display” in the main title as the structure can be seen from the chart.</p></li>
+</ul>
+<p><strong>Aesthetics:</strong></p>
+<ul>
+<li><p>Y-axis are redundant and can be combined and put in the leftmost column.</p></li>
+<li><p>The sizes of the bars are inconsistent (e.g.&nbsp;the bars of Hougang and Woodlands are thinner than others).</p></li>
+</ul>
+</section>
+<section id="proposed-design" class="level3">
+<h3 class="anchored" data-anchor-id="proposed-design">3.2.2 Proposed Design</h3>
+<p>A scratch of improved design is shown below to avoid redundancy in the trellis. <img src="picture/scratch.jpeg" class="img-fluid" data-fig-align="center" alt="Scratch"></p>
+</section>
+<section id="remake-1" class="level3">
+<h3 class="anchored" data-anchor-id="remake-1">3.2.3 Remake</h3>
+<p>In this part, steps will be given to show how to make an age-sex pyramid trellis by using RStudio.</p>
+<p><strong>Filter out desired areas</strong></p>
+<p>As the csv.file has already been uploaded under the R environment and renamed as “pop”, the filter command is then adopted to filter out the needed areas. Here the areas include: Ang Mo Kio, Bedok, Bishan, Clementi, Downtown Core, Geylang, Outram, Hougang, and Woodlands. After selecting, this data set is renamed as “filter pop”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>filter_pop <span class="ot">&lt;-</span> pop[<span class="fu">which</span>((pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Ang Mo Kio'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bedok'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Bishan'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Clementi'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Downtown Core'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Geylang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Outram'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Hougang'</span>) <span class="sc">|</span> (pop<span class="sc">$</span>PA <span class="sc">==</span> <span class="st">'Woodlands'</span>)),]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(filter_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><strong>Compute the frequency count by age, sex, and areas</strong></p>
+<p>By using the <em>group_by()</em> and <em>summarise ()</em> commands in dplyr package, the total population in Singapore in the categories of age, sex, and areas are counted.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>freq_pop <span class="ot">&lt;-</span> filter_pop <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="st">`</span><span class="at">AG</span><span class="st">`</span>, <span class="st">`</span><span class="at">Sex</span><span class="st">`</span>, <span class="st">`</span><span class="at">PA</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="st">'Count'</span><span class="ot">=</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">Pop</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Sort age group</strong></p>
+<p>Since sorting the data in age group by default could cause errors (e.g.&nbsp;10_to_14 comes before 5_to_9), the sorting order of the original dataset is used by introducing arrange( ).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>order <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0_to_4"</span>, <span class="st">"5_to_9"</span>, <span class="st">"10_to_14"</span>, <span class="st">"15_to_19"</span>, <span class="st">"20_to_24"</span>, <span class="st">"25_to_29"</span>, <span class="st">"30_to_34"</span>, <span class="st">"35_to_39"</span>, <span class="st">"40_to_44"</span>, <span class="st">"45_to_49"</span>, <span class="st">"50_to_54"</span>, <span class="st">"55_to_59"</span>, <span class="st">"60_to_64"</span>, <span class="st">"65_to_69"</span>, <span class="st">"70_to_74"</span>, <span class="st">"75_to_79"</span>, <span class="st">"80_to_84"</span>, <span class="st">"85_to_89"</span>, <span class="st">"90_and_over"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>sorted_pop <span class="ot">&lt;-</span> freq_pop <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">AG =</span>  <span class="fu">factor</span>(AG, <span class="at">levels =</span> order)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AG)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sorted_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Creating trellis plot</strong></p>
+<p>To make the graphs of each area into 3*3 trellis, the <em>facet_wrap()</em> is used. As we want to split 9 graphs according to different regions, <em>~PA</em> is put in. By adding <em>nrow = 3</em> in the facet_wrap, each row is set to contain 3 age-sex pyramids.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(sorted_pop, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">ifelse</span>(Sex <span class="sc">==</span> <span class="st">"Males"</span>, <span class="at">yes =</span> <span class="sc">-</span>Count, <span class="at">no =</span> Count), <span class="at">y =</span> AG, <span class="at">fill =</span> Sex)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>PA, <span class="at">nrow =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">10000</span>, <span class="sc">-</span><span class="dv">5000</span>, <span class="dv">0</span>, <span class="dv">5000</span>, <span class="dv">10000</span>), <span class="at">labels =</span> <span class="fu">paste0</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">10</span>),<span class="st">"k"</span>)) <span class="sc">+</span> <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Population"</span>, <span class="at">y =</span> <span class="st">"Age"</span>, <span class="at">title=</span><span class="st">'Singapore Age-Sex Population Pyramids in 9 Areas, 2022'</span>) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>,<span class="at">hjust=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>()) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Males"</span> <span class="ot">=</span> <span class="st">"dodgerblue3"</span>, <span class="st">"Females"</span> <span class="ot">=</span> <span class="st">"brown3"</span>)) </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The final downloaded version is shown below: <img src="picture/trellis.png" class="img-fluid" data-fig-align="center" alt="trellis"></p>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
