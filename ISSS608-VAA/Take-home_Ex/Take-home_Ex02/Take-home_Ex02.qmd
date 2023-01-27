@@ -35,7 +35,9 @@ The take-home exercise 1 contains the age-sex pyramid of Singapore in at least 9
 
 ## 3.1 Single Pyramid
 
-As there are 9 age-sex pyramids in the same structure, here the pyramid of Hougang is selected as an example. ![Original Hougang](picture/original_Hougang.png){fig-align="center"}
+As there are 9 age-sex pyramids in the same structure, here the pyramid of Hougang is selected as an example.
+
+![Original Hougang](picture/original_Hougang.png){fig-align="center"}
 
 ### 3.1.1 Critique
 
@@ -162,3 +164,11 @@ p
 ```
 
 The final downloaded version is shown below: ![trellis](picture/trellis.png){fig-align="center"}
+
+# 4. Learning Points
+
+From take-home exercise 2, I understand the criteria for a good visualization design and the difference between Tableau of ggplot tools.
+
+When conducting visual analysis, it is important to display objective data and emphasize the important points in analysis. Too much information could distract audience's attention and may lead to misleading results, and a well-organized graph can show professionalism in workplace.
+
+Compared with Tableau, ggplot is more flexible. For example, in making a trellis, different parameters need to be added in tableau, but only one command in gglot can realize the same function. Tableau has a more interactive surface, which makes users without programming knowledge easier to get started. Therefore, learning to use both visual analysis tools can help us to handle different problems in real work.
