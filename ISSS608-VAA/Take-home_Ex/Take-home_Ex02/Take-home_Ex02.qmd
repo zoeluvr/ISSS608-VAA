@@ -69,7 +69,6 @@ As there are 9 age-sex pyramids in the same structure, here the pyramid of Houga
 Based on the problems mentioned above, a single age-sex pyramid is remade. (step-by-step methods will be given in the remake of the trellis)
 
 ```{r}
-
 filter_pop_0 <- pop[which((pop$PA == 'Hougang')),]
 head(filter_pop_0)
 
@@ -147,6 +146,7 @@ head(freq_pop)
 Since sorting the data in age group by default could cause errors (e.g. 10_to_14 comes before 5_to_9), the sorting order of the original dataset is used by introducing arrange( ).
 
 ```{r}
+
 order <- c("0_to_4", "5_to_9", "10_to_14", "15_to_19", "20_to_24", "25_to_29", "30_to_34", "35_to_39", "40_to_44", "45_to_49", "50_to_54", "55_to_59", "60_to_64", "65_to_69", "70_to_74", "75_to_79", "80_to_84", "85_to_89", "90_and_over")
 
 sorted_pop <- freq_pop %>%
@@ -190,11 +190,10 @@ p2 <- ggplot(sorted_pop_1, aes(x = ifelse(Sex == "Males", yes = -Count, no = Cou
   geom_col() +
   scale_x_continuous(breaks = seq(-150000, 150000, 50000), 
                      labels = paste0(as.character(c(seq(150, 0, -50), seq(50, 150, 50))),"k")) +
-  labs (x = "Population", y = "Age", title='Singapore Age-Sex Population Pyramid 2021') +
+  labs (x = "Population", y = "Age", title='Singapore Age-Sex Population Pyramid 2022') +
   theme_bw() +
   theme(axis.ticks.y = element_blank()) +
   scale_fill_manual(values = c("Males" = "skyblue3", "Females" = "brown"))
-p2
 ```
 
 ```{r}
