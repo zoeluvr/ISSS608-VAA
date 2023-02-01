@@ -14,7 +14,7 @@ head(pop)
 ```
 
 ```{r}
-filter_pop <- pop[which((pop$PA == 'Hougang')),]
+filter_pop <- pop[which((pop$PA == 'Ang Mo Kio') | (pop$PA == 'Bedok') | (pop$PA == 'Bishan') | (pop$PA == 'Clementi') | (pop$PA == 'Downtown Core') | (pop$PA == 'Geylang') | (pop$PA == 'Outram') | (pop$PA == 'Hougang') | (pop$PA == 'Woodlands')),]
 head(filter_pop)
 ```
 
@@ -39,6 +39,6 @@ head(sorted_pop)
 ```{r}
 p <- ggplot(sorted_pop, aes(x = ifelse(Sex == "Males", yes = -Count, no = Count), y = AG, fill = Sex)) + geom_col() + facet_wrap(~PA, nrow = 3) + scale_x_continuous(breaks = c(-10000, -5000, 0, 5000, 10000), labels = paste0(c(10, 5, 0, 5, 10),"k")) + labs (x = "Population", y = "Age", title='Hougang Age-Sex Population Pyramid 2022') +
   theme_bw() + theme(plot.title = element_text(size=12,hjust=0.5)) +
-  theme(axis.ticks.y = element_blank()) + scale_fill_manual(values = c("Males" = "dodgerblue3", "Females" = "brown3")) 
+  theme(axis.ticks.y = element_blank()) + theme(axis.title.y = element_text(size =  0.1 )) + scale_fill_manual(values = c("Males" = "dodgerblue3", "Females" = "brown3"))
 p
 ```

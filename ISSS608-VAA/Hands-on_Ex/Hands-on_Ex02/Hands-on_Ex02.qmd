@@ -1,3 +1,63 @@
 ---
 title: "Hands-on Exercise 2: Creating Elegant Graphics with ggplot2"
 ---
+```{r}
+pacman::p_load(patchwork, ggthemes, hrbrthemes, ggrepel, tidyverse)
+```
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+```{r}
+p1 <- ggplot(data = exam_data,
+       aes(x = MATHS,
+       y = ENGLISH)) +
+  geom_point() + 
+  geom_smooth(method = lm,
+              linewidth = 0.5) +
+  geom_label_repel(aes(label = ID),
+             fontface = "bold") +
+  coord_cartesian(xlim = c(0,100),
+                  ylim = c(0,100)) +
+  theme_gray() + 
+  ggtitle("English scores versus Maths scores for primary 3")
+```
+
+```{r}
+p2 <- ggplot(data = exam_data,
+       aes(x = MATHS)) +
+  geom_histogram(bins = 10,
+                 boundary = 100,
+                 color = "grey25",
+                 fill = "yellow2") +
+  theme_ipsum(axis_title_size = 18,
+              base_size = 10,
+              grid = "Y")
+  ggtitle("Distribution of Maths scores")
+```
+
+```{r}
+p3 <- ggplot(data=exam_data, 
+             aes(x = ENGLISH)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of English scores")
+```
+
+```{r}
+patchwork <- (p2/p3)|p1 +
+  plot_annotation(tag_levels = 'All Graphs')
+patchwork & theme_economist()
+```
+
+```{r}
+p1 + inset_element(p3,
+                   left = 0.02,
+                   bottom = 0.7,
+                   right = 0.5,
+                   top = 1)
+```
