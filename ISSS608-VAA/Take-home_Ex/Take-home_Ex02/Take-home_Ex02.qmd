@@ -172,6 +172,7 @@ girafe(
   height_svg = 7
 )
 ```
+
 After making the trellis, we can combine it with the age-sex pyramid of the whole Singapore in 2022 to compare the overall trend, and the final version is shown below:
 
 ```{r}

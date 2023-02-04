@@ -16,7 +16,7 @@ Installing and loading R packages
 Two packages will be installed and loaded. They are: tidyverse and ggiraph
 
 ```{r}
-pacman::p_load(ggiraph, tidyverse)
+pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, tidyverse)
 ```
 
 importing data
@@ -32,12 +32,33 @@ p <- ggplot(data=exam_data,
     aes(tooltip = ID),
     stackgroups = TRUE, 
     binwidth = 1, 
-    method = "histodot") +
-  scale_y_continuous(NULL, 
-                     breaks = NULL)
+    method = "histodot")
+
 girafe(
   ggobj = p,
   width_svg = 6,
   height_svg = 6*0.618
 )
 ```
+
+```{r}
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(data_id = CLASS),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6*0.618,
+  options = list(                        
+    opts_hover(css = "fill: #202020;"),  
+    opts_hover_inv(css = "opacity:0.2;") 
+  )                                        
+)                                        
+```
+
