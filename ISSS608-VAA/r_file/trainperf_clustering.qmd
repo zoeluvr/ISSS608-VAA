@@ -1,0 +1,57 @@
+---
+title: "trainperf_clustering"
+---
+
+```{r}
+pacman::p_load(factoextra, tidyverse)
+```
+
+```{r}
+trianperf <- read.csv("data/trainperf_clustering.csv", header = T, row.names = 1)
+head(trianperf)
+```
+
+```{r}
+dim(trianperf)
+fviz_nbclust(trianperf, kmeans, method = "wss")
+```
+
+```{r}
+trianperf.kmeans <- kmeans(trianperf, centers = 4, nstart = 25)
+names(trianperf.kmeans)
+trianperf.kmeans$cluster
+trianperf.kmeans$size
+```
+
+```{r}
+fviz_cluster(object = trianperf.kmeans, data = trianperf[,1:4],
+             ellipse.type = "euclid", star.plot=T,repel=T,
+             geom = ("point"), palette = 'jco', main = "",
+             ggtheme = theme_minimal()) +
+  theme(axis.title = element_blank()) + labs(title = "Clustering for the 'Good' and 'Bad' Label")
+```
+
+```{r}
+bad <- read.csv("data/Bad.csv", header = T, row.names = 1)
+head(bad)
+```
+
+```{r}
+dim(bad)
+fviz_nbclust(bad, kmeans, method = "wss")
+```
+
+```{r}
+bad.kmeans <- kmeans(bad, centers = 3, nstart = 25)
+names(bad.kmeans)
+bad.kmeans$cluster
+bad.kmeans$size
+```
+
+```{r}
+fviz_cluster(object = bad.kmeans, data = bad[,1:4],
+             ellipse.type = "euclid", star.plot=T,repel=T,
+             geom = ("point"), palette = 'jco', main = "",
+             ggtheme = theme_minimal()) +
+  theme(axis.title = element_blank()) + labs(title = "Clustering for the 'Bad' Label")
+```

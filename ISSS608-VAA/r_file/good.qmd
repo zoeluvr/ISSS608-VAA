@@ -1,0 +1,40 @@
+---
+title: "Good"
+---
+```{r}
+pacman::p_load(factoextra, tidyverse)
+```
+
+```{r}
+df1 <- read.csv("data/good.csv", header = T, row.names = 1)
+head(df1)
+```
+
+
+```{r}
+df1.kmeans <- kmeans(df1, centers = 3, nstart = 25)
+names(df1.kmeans)
+df1.kmeans$cluster
+df1.kmeans$size
+```
+
+```{r}
+fviz_cluster(object = df1.kmeans, data = df1[,1:4],
+             ellipse.type = "euclid", star.plot=T,repel=T,
+             geom = ("point"), palette = 'jco', main = "",
+             ggtheme = theme_minimal()) +
+  theme(axis.title = element_blank()) + labs(title = "Clustering for the 'Good' Label")
+```
+
+```{r}
+df2 <- read.csv("data/good.csv", header = T, row.names = 1)
+head(df2)
+```
+
+```{r}
+dim(df2)
+fviz_nbclust(df2, kmeans, method = "wss") + labs(Title = "Clustering number for the 'Good' Label")
+```
+
+
+
