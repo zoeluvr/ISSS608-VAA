@@ -116,4 +116,3 @@ ggplot(my_sum) +
   ggtitle("Standard error of mean 
           maths score by rac")
 ```
-

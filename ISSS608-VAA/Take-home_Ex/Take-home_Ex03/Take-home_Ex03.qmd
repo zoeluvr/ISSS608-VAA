@@ -10,7 +10,7 @@ format: html
 ---
 
 ```{r}
-pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph)
+pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see)
 ```
 
 ```{r}
@@ -22,11 +22,54 @@ head(resale)
 resale_filter <-
   resale %>% 
   filter(flat_type == c("5 ROOM", "3 ROOM", "4 ROOM")) %>% 
-  filter(str_detect(month,"22"))
+  filter(str_detect(month,"22")) %>% 
+  separate(remaining_lease, into = c("remaining_lease"), sep = "years") %>% 
+  transform(resale_price = resale_price/1000)
 head(resale_filter)
 ```
 
+
 ```{r}
-resale_filter %>% 
-  separate(remaining_lease, into = c("remaining_lease"), sep = "years")
+model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = resale_filter)
+model_resale
+```
+
+```{r}
+check_collinearity(model_resale)
+```
+
+```{r}
+check_r <- check_collinearity(model_resale)
+plot(check_r)
+```
+
+```{r}
+model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = resale_filter)
+check_r_1 <- check_normality(model_resale_1)
+plot(model_resale_1)
+```
+
+
+```{r}
+ggbetweenstats(
+  data = resale_filter,
+  x = flat_type, 
+  y = resale_price,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
+```{r}
+
+ggscatterstats(
+  data = resale_filter,
+  x = remaining_lease,
+  y = resale_price,
+  marginal = FALSE,
+  )
 ```

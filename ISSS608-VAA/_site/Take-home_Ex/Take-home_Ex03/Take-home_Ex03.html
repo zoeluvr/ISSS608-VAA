@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Luo Zheng">
-<meta name="dcterms.date" content="2023-02-07">
+<meta name="dcterms.date" content="2023-02-08">
 
 <title>ISSS608-VAA - Take-home Exercise03</title>
 <style>
@@ -238,7 +238,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 7, 2023</p>
+      <p class="date">February 8, 2023</p>
     </div>
   </div>
   
@@ -249,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header>
 
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resale <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/resale_price.csv"</span>)</span>
@@ -273,43 +273,153 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>resale_filter <span class="ot">&lt;-</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  resale <span class="sc">%&gt;%</span> </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flat_type <span class="sc">==</span> <span class="fu">c</span>(<span class="st">"5 ROOM"</span>, <span class="st">"3 ROOM"</span>, <span class="st">"4 ROOM"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(month,<span class="st">"22"</span>))</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(resale_filter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(month,<span class="st">"22"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(remaining_lease, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"remaining_lease"</span>), <span class="at">sep =</span> <span class="st">"years"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transform</span>(<span class="at">resale_price =</span> resale_price<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(resale_filter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 11
-  month  town      flat_…¹ block stree…² store…³ floor…⁴ flat_…⁵ lease…⁶ remai…⁷
-  &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;  
-1 Jan-22 ANG MO K… 3 ROOM  320   ANG MO… 07 TO …      73 New Ge…    1977 54 yea…
-2 Jan-22 ANG MO K… 3 ROOM  534   ANG MO… 07 TO …      82 New Ge…    1980 57 yea…
-3 Jan-22 ANG MO K… 3 ROOM  560   ANG MO… 01 TO …      67 New Ge…    1980 57 yea…
-4 Jan-22 ANG MO K… 3 ROOM  560   ANG MO… 10 TO …      67 New Ge…    1980 57 yea…
-5 Jan-22 ANG MO K… 3 ROOM  556   ANG MO… 01 TO …      68 New Ge…    1980 57 yea…
-6 Jan-22 ANG MO K… 3 ROOM  444   ANG MO… 01 TO …      67 New Ge…    1979 56 yea…
-# … with 1 more variable: resale_price &lt;dbl&gt;, and abbreviated variable names
-#   ¹​flat_type, ²​street_name, ³​storey_range, ⁴​floor_area_sqm, ⁵​flat_model,
-#   ⁶​lease_commence_date, ⁷​remaining_lease</code></pre>
+<pre><code>   month       town flat_type block       street_name storey_range
+1 Jan-22 ANG MO KIO    3 ROOM   320  ANG MO KIO AVE 1     07 TO 09
+2 Jan-22 ANG MO KIO    3 ROOM   534 ANG MO KIO AVE 10     07 TO 09
+3 Jan-22 ANG MO KIO    3 ROOM   560 ANG MO KIO AVE 10     01 TO 03
+4 Jan-22 ANG MO KIO    3 ROOM   560 ANG MO KIO AVE 10     10 TO 12
+5 Jan-22 ANG MO KIO    3 ROOM   556 ANG MO KIO AVE 10     01 TO 03
+6 Jan-22 ANG MO KIO    3 ROOM   444 ANG MO KIO AVE 10     01 TO 03
+  floor_area_sqm     flat_model lease_commence_date remaining_lease
+1             73 New Generation                1977             54 
+2             82 New Generation                1980             57 
+3             67 New Generation                1980             57 
+4             67 New Generation                1980             57 
+5             68 New Generation                1980             57 
+6             67 New Generation                1979             56 
+  resale_price
+1          358
+2          420
+3          300
+4          330
+5          318
+6          315</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>resale_filter <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(remaining_lease, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"remaining_lease"</span>), <span class="at">sep =</span> <span class="st">"years"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_resale <span class="ot">&lt;-</span> <span class="fu">lm</span>(resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span> lease_commence_date <span class="sc">+</span> remaining_lease, <span class="at">data =</span> resale_filter)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model_resale</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8,122 × 11
-   month  town     flat_…¹ block stree…² store…³ floor…⁴ flat_…⁵ lease…⁶ remai…⁷
-   &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;  
- 1 Jan-22 ANG MO … 3 ROOM  320   ANG MO… 07 TO …      73 New Ge…    1977 "54 "  
- 2 Jan-22 ANG MO … 3 ROOM  534   ANG MO… 07 TO …      82 New Ge…    1980 "57 "  
- 3 Jan-22 ANG MO … 3 ROOM  560   ANG MO… 01 TO …      67 New Ge…    1980 "57 "  
- 4 Jan-22 ANG MO … 3 ROOM  560   ANG MO… 10 TO …      67 New Ge…    1980 "57 "  
- 5 Jan-22 ANG MO … 3 ROOM  556   ANG MO… 01 TO …      68 New Ge…    1980 "57 "  
- 6 Jan-22 ANG MO … 3 ROOM  444   ANG MO… 01 TO …      67 New Ge…    1979 "56 "  
- 7 Jan-22 ANG MO … 3 ROOM  444   ANG MO… 10 TO …      67 New Ge…    1979 "56 "  
- 8 Jan-22 ANG MO … 3 ROOM  556   ANG MO… 01 TO …      68 New Ge…    1980 "57 "  
- 9 Jan-22 ANG MO … 3 ROOM  416   ANG MO… 01 TO …      74 New Ge…    1979 "56 "  
-10 Jan-22 ANG MO … 3 ROOM  120   ANG MO… 04 TO …      67 New Ge…    1978 "55 "  
-# … with 8,112 more rows, 1 more variable: resale_price &lt;dbl&gt;, and abbreviated
-#   variable names ¹​flat_type, ²​street_name, ³​storey_range, ⁴​floor_area_sqm,
-#   ⁵​flat_model, ⁶​lease_commence_date, ⁷​remaining_lease</code></pre>
+<pre><code>
+Call:
+lm(formula = resale_price ~ floor_area_sqm + lease_commence_date + 
+    remaining_lease, data = resale_filter)
+
+Coefficients:
+        (Intercept)       floor_area_sqm  lease_commence_date  
+         -18424.736                5.132                9.366  
+ remaining_lease44    remaining_lease45    remaining_lease46   
+            -22.260               -8.578              -35.852  
+ remaining_lease47    remaining_lease48    remaining_lease49   
+            -29.752              -17.698               -4.141  
+ remaining_lease50    remaining_lease51    remaining_lease52   
+            -19.938              -19.921              -60.283  
+ remaining_lease53    remaining_lease54    remaining_lease55   
+            -64.164              -95.287              -95.967  
+ remaining_lease56    remaining_lease57    remaining_lease58   
+           -108.861             -124.890             -116.635  
+ remaining_lease59    remaining_lease60    remaining_lease61   
+           -139.133             -142.441             -164.479  
+ remaining_lease62    remaining_lease63    remaining_lease64   
+           -168.529             -173.673             -189.694  
+ remaining_lease65    remaining_lease66    remaining_lease67   
+           -213.185             -233.675             -272.138  
+ remaining_lease68    remaining_lease69    remaining_lease70   
+           -175.069             -243.307             -296.913  
+ remaining_lease71    remaining_lease72    remaining_lease73   
+           -286.551             -290.325             -275.885  
+ remaining_lease74    remaining_lease75    remaining_lease76   
+           -283.141             -290.836             -308.149  
+ remaining_lease77    remaining_lease78    remaining_lease79   
+           -291.323             -319.553             -288.257  
+ remaining_lease80    remaining_lease81    remaining_lease82   
+           -312.298             -316.227             -194.469  
+ remaining_lease83    remaining_lease84    remaining_lease85   
+           -115.582             -318.363             -197.621  
+ remaining_lease86    remaining_lease87    remaining_lease88   
+           -238.142               -9.179             -138.709  
+ remaining_lease89    remaining_lease90    remaining_lease91   
+           -273.333             -300.291             -309.443  
+ remaining_lease92    remaining_lease93    remaining_lease94   
+           -355.723             -325.416             -317.885  
+ remaining_lease95    remaining_lease96   
+           -324.562              -65.865  </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(model_resale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+           Term  VIF   VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+ floor_area_sqm 1.45 [1.41, 1.49]         1.20      0.69     [0.67, 0.71]
+
+High Correlation
+
+                Term     VIF         VIF 95% CI Increased SE Tolerance
+ lease_commence_date  972.68 [ 931.59, 1015.58]        31.19  1.03e-03
+     remaining_lease 1359.65 [1302.21, 1419.63]        36.87  7.35e-04
+ Tolerance 95% CI
+     [0.00, 0.00]
+     [0.00, 0.00]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>check_r <span class="ot">&lt;-</span> <span class="fu">check_collinearity</span>(model_resale)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(check_r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model_resale_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(resale_price <span class="sc">~</span> floor_area_sqm <span class="sc">+</span> remaining_lease, <span class="at">data =</span> resale_filter)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>check_r_1 <span class="ot">&lt;-</span> <span class="fu">check_normality</span>(model_resale_1)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_resale_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-7-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_filter,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> flat_type, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> resale_price,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean.ci =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.display =</span> <span class="st">"s"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.adjust.method =</span> <span class="st">"fdr"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatterstats</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_filter,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> remaining_lease,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> resale_price,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
