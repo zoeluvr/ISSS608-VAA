@@ -46,7 +46,7 @@ plot(check_r)
 ```{r}
 model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = resale_filter)
 check_r_1 <- check_normality(model_resale_1)
-plot(model_resale_1)
+plot(check_r_1)
 ```
 
 
