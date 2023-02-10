@@ -10,7 +10,7 @@ format: html
 ---
 
 ```{r}
-pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see)
+pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly)
 ```
 
 ```{r}
@@ -49,6 +49,70 @@ transform(unit_price = resale_price/floor_area_sqm)
 head(re)
 ```
 
+```{r}
+model_floorarea <- lm(resale_price ~ floor_area_sqm, data = re)
+model_floorarea
+```
+
+```{r}
+check_model(model_floorarea)
+```
+
+```{r}
+model_lease <- lm(resale_price ~ remaining_lease, data = re)
+model_lease
+```
+
+```{r}
+check_model(model_lease)
+```
+
+```{r}
+ggbetweenstats(
+  data = re,
+  x = flat_type, 
+  y = resale_price,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
+```{r}
+ggbarstats(re, 
+           x = storey_bins, 
+           y = flat_type)
+```
+
+```{r}
+plot_ly(data = re, 
+        x = ~lease_commence_date, 
+        y = ~unit_price, 
+        color = ~storey_bins,
+        text = ~paste("Town:", town,     
+                      "<br>Model:", flat_model)) %>% 
+  layout(title = "Relationship of Lease Commence Date with Unit Price", xaxis = list(title = "Lease Commence Date (year)"), yaxis = list(title = "Unit Price (K SGD)" ), legend = list(title=list(text="<b> Storey Bins </b>")))
+```
+
+```{r}
+avg_price <- aggregate(re$unit_price, by = list(re$town), mean)
+```
+
+```{r}
+avg_price$x=round(avg_price$x,2)
+head(avg_price)
+```
+
+```{r}
+p_avg_price <- ggplot(data = avg_price, mapping = aes(x = reorder(Group.1, -x), y = x, group = 1)) + geom_line(colour =  'steelblue', size = 2) + geom_point() + xlab('') + ylab("Unit Price (K SGD)") + theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + labs(title = "Unit Price of Different Towns") + theme(plot.title = element_text(size=12,hjust=0.5)) + geom_point_interactive(aes(tooltip = x, data_id = x)) + scale_y_continuous(limits = c(3, 9))
+
+girafe(ggobj = p_avg_price,
+       width_svg = 6,
+  height_svg = 6*0.618)
+```
 
 ```{r}
 model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = re)
