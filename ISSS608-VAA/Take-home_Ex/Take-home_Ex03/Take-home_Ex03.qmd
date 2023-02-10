@@ -22,15 +22,36 @@ head(resale)
 resale_filter <-
   resale %>% 
   filter(flat_type == c("5 ROOM", "3 ROOM", "4 ROOM")) %>% 
-  filter(str_detect(month,"22")) %>% 
-  separate(remaining_lease, into = c("remaining_lease"), sep = "years") %>% 
-  transform(resale_price = resale_price/1000)
+  filter(str_detect(month,"22")) 
 head(resale_filter)
+```
+
+```{r}
+resale_arrange <- 
+  resale_filter %>% 
+  separate(remaining_lease, into = c("remaining_lease"), sep = "years") %>% 
+  transform(resale_price = resale_price/1000) %>% 
+  separate(storey_range, into = c(NA, "storey"), sep = "TO ")
+head(resale_arrange)
+```
+
+```{r}
+resale_arrange$storey=as.numeric(resale_arrange$storey) 
+head(resale_arrange)
+```
+
+```{r}
+re <- resale_arrange %>% 
+mutate(storey_bins = 
+           cut(storey, 
+               breaks = c(0,9,21,22,51))) %>% 
+transform(unit_price = resale_price/floor_area_sqm)
+head(re)
 ```
 
 
 ```{r}
-model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = resale_filter)
+model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = re)
 model_resale
 ```
 
@@ -44,7 +65,7 @@ plot(check_r)
 ```
 
 ```{r}
-model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = resale_filter)
+model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = re)
 check_r_1 <- check_normality(model_resale_1)
 plot(check_r_1)
 ```
@@ -52,7 +73,7 @@ plot(check_r_1)
 
 ```{r}
 ggbetweenstats(
-  data = resale_filter,
+  data = re,
   x = flat_type, 
   y = resale_price,
   type = "p",
@@ -67,7 +88,7 @@ ggbetweenstats(
 ```{r}
 
 ggscatterstats(
-  data = resale_filter,
+  data = re,
   x = remaining_lease,
   y = resale_price,
   marginal = FALSE,
