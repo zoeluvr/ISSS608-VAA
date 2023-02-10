@@ -10,7 +10,7 @@ format: html
 ---
 
 ```{r}
-pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly)
+pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly, factoextra)
 ```
 
 ```{r}
@@ -115,6 +115,31 @@ girafe(ggobj = p_avg_price,
 ```
 
 ```{r}
+dim(re)
+fviz_nbclust(re[c("floor_area_sqm","resale_price","unit_price")], kmeans, method = "wss")
+```
+
+```{r}
+re.kmeans <- kmeans(re[c("floor_area_sqm","resale_price","unit_price")], centers = 4, nstart = 25)
+names(re.kmeans)
+table(re.kmeans$cluster)
+```
+
+```{r}
+table(re$town, re.kmeans$cluster)
+```
+
+```{r}
+aggregate(re[c("floor_area_sqm","resale_price","unit_price")], list(re.kmeans$cluster),mean)
+```
+
+```{r}
+p_cluster <- ggplot(data = re[c("floor_area_sqm","resale_price","unit_price")], mapping = aes(x = floor_area_sqm, y = unit_price, color = factor(re.kmeans$cluster)))
+p_cluster <- p_cluster + geom_point(pch = 20, size = 3)
+p_cluster + scale_colour_manual(values = c("skyblue2", "orange", "green3","red"))
+```
+
+```{r}
 model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = re)
 model_resale
 ```
@@ -135,26 +160,4 @@ plot(check_r_1)
 ```
 
 
-```{r}
-ggbetweenstats(
-  data = re,
-  x = flat_type, 
-  y = resale_price,
-  type = "p",
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.display = "s",
-  p.adjust.method = "fdr",
-  messages = FALSE
-)
-```
 
-```{r}
-
-ggscatterstats(
-  data = re,
-  x = remaining_lease,
-  y = resale_price,
-  marginal = FALSE,
-  )
-```
