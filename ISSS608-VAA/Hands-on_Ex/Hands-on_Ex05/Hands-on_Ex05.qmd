@@ -1,0 +1,98 @@
+---
+title: "Hands-on Exercise 05"
+---
+
+```{r}
+pacman::p_load(corrplot, tidyverse, ggstatsplot, corrgram, ellipse, corrplot, seriation, dendextend, heatmaply)
+```
+
+```{r}
+wine <- read_csv("data/wine_quality.csv")
+```
+
+```{r}
+pairs(wine[,1:11])
+```
+
+```{r}
+pairs(wine[,2:12])
+```
+
+```{r}
+pairs(wine[,2:12], upper.panel = NULL)
+```
+
+```{r}
+pairs(wine[,2:12], lower.panel = NULL)
+```
+
+```{r}
+ggstatsplot::ggcorrmat(
+  data = wine, 
+  cor.vars = 1:11)
+```
+
+```{r}
+ggstatsplot::ggcorrmat(
+  data = wine, 
+  cor.vars = 1:11,
+  ggcorrplot.args = list(outline.color = "black", 
+                         hc.order = TRUE,
+                         tl.cex = 10),
+  title    = "Correlogram for wine dataset",
+  subtitle = "Four pairs are no significant at p < 0.05"
+)
+```
+
+```{r}
+wine.cor <- cor(wine[, 1:11])
+```
+
+```{r}
+corrplot(wine.cor)
+```
+
+```{r}
+corrplot.mixed(wine.cor, 
+               lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+```{r}
+corrplot.mixed(wine.cor, 
+               lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               order="AOE",
+               tl.col = "black")
+```
+```{r}
+pop_data <- read_csv("data/respopagsex2000to2018_tidy.csv") 
+```
+
+```{r}
+agpop_mutated <- pop_data %>%
+  mutate(`Year` = as.character(Year))%>%
+  spread(AG, Population) %>%
+  mutate(YOUNG = rowSums(.[4:8]))%>%
+  mutate(ACTIVE = rowSums(.[9:16]))  %>%
+  mutate(OLD = rowSums(.[17:21])) %>%
+  mutate(TOTAL = rowSums(.[22:24])) %>%
+  filter(Year == 2018)%>%
+  filter(TOTAL > 0)
+```
+
+```{r}
+wh <- read_csv("data/WHData-2018.csv")
+```
+```{r}
+row.names(wh) <- wh$Country
+```
+
+```{r}
+wh1 <- dplyr::select(wh, c(3, 7:12))
+wh_matrix <- data.matrix(wh)
+```
