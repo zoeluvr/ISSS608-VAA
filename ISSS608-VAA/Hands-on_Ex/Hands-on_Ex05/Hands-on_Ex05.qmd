@@ -60,6 +60,7 @@ corrplot.mixed(wine.cor,
                diag = "l",
                tl.col = "black")
 ```
+
 ```{r}
 corrplot.mixed(wine.cor, 
                lower = "ellipse", 
@@ -69,6 +70,7 @@ corrplot.mixed(wine.cor,
                order="AOE",
                tl.col = "black")
 ```
+
 ```{r}
 pop_data <- read_csv("data/respopagsex2000to2018_tidy.csv") 
 ```
@@ -88,6 +90,7 @@ agpop_mutated <- pop_data %>%
 ```{r}
 wh <- read_csv("data/WHData-2018.csv")
 ```
+
 ```{r}
 row.names(wh) <- wh$Country
 ```
