@@ -10,7 +10,7 @@ format: html
 ---
 
 ```{r}
-pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, dplyr, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly, factoextra)
+pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly, factoextra)
 ```
 
 ```{r}
@@ -23,7 +23,6 @@ resale_filter <-
   resale %>% 
   filter(flat_type == c("5 ROOM", "3 ROOM", "4 ROOM")) %>% 
   filter(str_detect(month,"22")) 
-head(resale_filter)
 ```
 
 ```{r}
@@ -32,12 +31,10 @@ resale_arrange <-
   separate(remaining_lease, into = c("remaining_lease"), sep = "years") %>% 
   transform(resale_price = resale_price/1000) %>% 
   separate(storey_range, into = c(NA, "storey"), sep = "TO ")
-head(resale_arrange)
 ```
 
 ```{r}
 resale_arrange$storey=as.numeric(resale_arrange$storey) 
-head(resale_arrange)
 ```
 
 ```{r}
@@ -46,7 +43,6 @@ mutate(storey_bins =
            cut(storey, 
                breaks = c(0,9,21,22,51))) %>% 
 transform(unit_price = resale_price/floor_area_sqm)
-head(re)
 ```
 
 ```{r}
@@ -115,6 +111,18 @@ girafe(ggobj = p_avg_price,
 ```
 
 ```{r}
+ggstatsplot::ggcorrmat(data = re, cor.vars = c(6:7,10:11,13),
+ggcorrplot.args = list(outline.color = "black", 
+                         hc.order = TRUE,
+                         tl.cex = 10),
+  title    = "Correlogram for resale dataset",
+  subtitle = "Four pairs are no significant at p < 0.05"
+)
+
+```
+
+
+```{r}
 dim(re)
 fviz_nbclust(re[c("floor_area_sqm","resale_price","unit_price")], kmeans, method = "wss")
 ```
@@ -158,6 +166,3 @@ model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = re)
 check_r_1 <- check_normality(model_resale_1)
 plot(check_r_1)
 ```
-
-
-
