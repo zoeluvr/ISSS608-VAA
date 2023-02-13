@@ -1,5 +1,6 @@
 ---
 title: "Take-home Exercise03"
+subtitle: "Uncover the Patterns of the Resale Prices"
 author: "Luo Zheng" 
 date: "`r Sys.Date()`"
 execute: 
@@ -9,14 +10,48 @@ execute:
 format: html
 ---
 
+# 1. Overview
+
+## 1.1 Introduction
+
+In this take-home exercise, the patterns of the resale prices of public housing property in Singapore will be revealed by using static and interactive visualization techniques.
+
+The study mainly focuses on 3-ROOM, 4-ROOM, and 5-ROOM types to discover Singapore's resale property market in 2022. In the homework, the following questions will be addressed:
+
+(1) What are the general features of the resale property in 2022?
+
+(2) How do different factors influence the price of the resale property?
+
+(3) How can we categorize the existing resale properties in Singapore in 2022?
+
+## 1.2 Methodology
+
+The study first tests the **normality** of the main indicators to see if any of the factors are directly related to price. Then **exploratory data analysis** is adopted to uncover the general features of the resale property market in Singapore. Lastly, **correlation analysis** is introduced to find how different factors influence the resale prices and how to categorize the large pool of properties to give suggestions on property purchasing.
+
+# 2. Data Preparation
+
+## 2.1 Install and Load Packages
+
+Use *paccman::* to install required R packages and load them onto RStudio environment.
+
 ```{r}
 pacman::p_load(tidyverse, patchwork, ggthemes, hrbrthemes, ggrepel, ggiraph, ggstatsplot, PMCMRplus, performance, parameters, see, plotly, factoextra)
 ```
+
+## 2.2 Import Datasets
+
+The raw dataset is imported using *read_csv( )* and named as "resale". The following code chunk is used to have an overview of the datasets.
 
 ```{r}
 resale <- read_csv("data/resale_price.csv")
 head(resale)
 ```
+
+## 2.3 Data Wrangling
+
+### 2.3.1 Filter Data
+
+Use *filter( )* to select the data of "3 ROOM", "4 ROOM" and "5 ROOM". Since we only want the statistics of 2022, the data contains the string of "22"is filtered under the month column.
 
 ```{r}
 resale_filter <-
@@ -24,6 +59,10 @@ resale_filter <-
   filter(flat_type == c("5 ROOM", "3 ROOM", "4 ROOM")) %>% 
   filter(str_detect(month,"22")) 
 ```
+
+### 2.3.2 Rearrange Data
+
+*Separate( )* is adopted to divide year and month of remaining lease and *transform( )* is to convert the data of resale_price into "K". To divide the resale property into low level, middle level and high level, the column of story_range is created after transferring the related data into number. Through these procedures, the tidy version of data is made and names as re.
 
 ```{r}
 resale_arrange <- 
@@ -45,36 +84,56 @@ mutate(storey_bins =
 transform(unit_price = resale_price/floor_area_sqm)
 ```
 
+# 3. Visualizations and Insights
+
+## 3.1 Check Normality
+
+To better understand the data sets, the *check_model( )* is adopted to have a general overview of the data. The study assumes that the price of the resale property is related to floor area and remaining release. Hence the data is tested to see if it can directly conduct variance analysis and linear regression modeling.
+
+From the above normality test, the price of the resale property is not satisfied with normal distribution neither with the floor area nor the remaining lease. Therefore, linear regression modeling cannot be directly applied to the analysis of the resale property price.
+
 ```{r}
 model_floorarea <- lm(resale_price ~ floor_area_sqm, data = re)
-model_floorarea
 ```
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 12
 check_model(model_floorarea)
 ```
 
 ```{r}
 model_lease <- lm(resale_price ~ remaining_lease, data = re)
-model_lease
 ```
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 12
 check_model(model_lease)
 ```
+
+## 3.2 Visualize Features
+
+### 3.2.1 Price and Storey of Different Flat Types
+
+The following static graphs show the price and story range of different flat types, namely 3 ROOM, 4 ROOM, and 5 ROOM. From the plot created by *ggbetweenstats( )* and *ggbarstats( )*, we can tell the mean price and price range and see what the story distribution of each house type is.
+
+The number of 4 ROOM is the highest. The mean price is similar for every flat type. Most of the three-bedroom and five-bedroom unit prices are clustered in the middle and lower reaches and the largest mean price occurs in the 4 room types. As for the story distribution, most resale rooms in the market are located on low floors, which has the largest percentage in 3 ROOM types. This indicates that 3 and 5 room types can be more economic for buyers, and higher stories might have higher prices because of limited second-hand property resources and Singapore's climate.
 
 ```{r}
 ggbetweenstats(
   data = re,
   x = flat_type, 
-  y = resale_price,
+  y = unit_price,
+  xlab            = "Flat Type",
+  ylab            = "Unit Price (K SGD)",
   type = "p",
   mean.ci = TRUE, 
   pairwise.comparisons = TRUE, 
   pairwise.display = "s",
   p.adjust.method = "fdr",
   messages = FALSE
-)
+) 
 ```
 
 ```{r}
@@ -83,13 +142,19 @@ ggbarstats(re,
            y = flat_type)
 ```
 
+### 3.2.2 Price by Lease Commence Date and Towns
+
+The dot plot created by *plot_ly( )* shows the relationship between the lease commence date and unit price. From the interactive tooltip label on hovering, we can tell the town and flat type the property belongs to and have some insights into their relationship.
+
+From the plot, we can see the new flat often sells at higher prices, but there are still many exceptions. For example, some old 3 rooms can have high unit prices because of their location. To specify the influence of locations, the line chart of the price created by *giraffe( )* in different towns is shown. Additionally, many rooms at a higher level are much more expensive than their counterparts, which indicates the story can have a tremendous impact on the unit price of resale houses.
+
 ```{r}
 plot_ly(data = re, 
         x = ~lease_commence_date, 
         y = ~unit_price, 
         color = ~storey_bins,
         text = ~paste("Town:", town,     
-                      "<br>Model:", flat_model)) %>% 
+                      "<br>Type:", flat_type)) %>% 
   layout(title = "Relationship of Lease Commence Date with Unit Price", xaxis = list(title = "Lease Commence Date (year)"), yaxis = list(title = "Unit Price (K SGD)" ), legend = list(title=list(text="<b> Storey Bins </b>")))
 ```
 
@@ -110,8 +175,12 @@ girafe(ggobj = p_avg_price,
   height_svg = 6*0.618)
 ```
 
+## 3.3 Visualize Correlation
+
+To substantiate the findings in the visualization of the features, a correlogram is used to show key elements related to unit prices. The feature of the lease commence date is omitted in the graph because its P is larger than 0.05.
+
 ```{r}
-ggstatsplot::ggcorrmat(data = re, cor.vars = c(6:7,10:11,13),
+ggstatsplot::ggcorrmat(data = re, cor.vars = c(6:7,10,13),
 ggcorrplot.args = list(outline.color = "black", 
                          hc.order = TRUE,
                          tl.cex = 10),
@@ -121,6 +190,7 @@ ggcorrplot.args = list(outline.color = "black",
 
 ```
 
+After the correlogram, clustering is adopted to categorize different house types. By using *fviz_nbclust( )*, it can be seen the best number for clustering is 4. K-means (introduce "floor_area_sqm","resale_price","unit_price") is used to do modeling and present the statistics in terms of "town"and "storey_bins"in a table. The summarized features of four types of properties are listed in the table, and a dot plot is created to visualize the clustering of different categorizations by using *ggplot2( ).*
 
 ```{r}
 dim(re)
@@ -129,12 +199,15 @@ fviz_nbclust(re[c("floor_area_sqm","resale_price","unit_price")], kmeans, method
 
 ```{r}
 re.kmeans <- kmeans(re[c("floor_area_sqm","resale_price","unit_price")], centers = 4, nstart = 25)
-names(re.kmeans)
 table(re.kmeans$cluster)
 ```
 
 ```{r}
 table(re$town, re.kmeans$cluster)
+```
+
+```{r}
+table(re$storey_bins, re.kmeans$cluster)
 ```
 
 ```{r}
@@ -147,22 +220,10 @@ p_cluster <- p_cluster + geom_point(pch = 20, size = 3)
 p_cluster + scale_colour_manual(values = c("skyblue2", "orange", "green3","red"))
 ```
 
-```{r}
-model_resale <- lm(resale_price ~ floor_area_sqm + lease_commence_date + remaining_lease, data = re)
-model_resale
-```
+# 4. Learning Point
 
-```{r}
-check_collinearity(model_resale)
-```
+In this take-home exercise, interactive and statistic visualization R Packages, such as plotly, ggiraph, ggstatsplot are applied to uncover the patterns of resale prices. My key takeaways are:
 
-```{r}
-check_r <- check_collinearity(model_resale)
-plot(check_r)
-```
+Rstudio is a powerful tool when doing interactive visualizations, which provides more options for audience to select details for customized viewing. In this assignment, I find it difficult to integrate various information together as there are many elements that should be taken into consideration. Additionally, if a project contains data modeling, a special design must be adopted to make the graph both lively and understandable.
 
-```{r}
-model_resale_1 <- lm(resale_price ~ floor_area_sqm + remaining_lease, data = re)
-check_r_1 <- check_normality(model_resale_1)
-plot(check_r_1)
-```
+When introducing statistical methods into the visualization analysis, the graph can provide more details. Having a basic understanding of statics is essential for us to do data modeling, and I still need to improve my skills in doing it since I often lack creative ideas in arranging and interpreting data.
