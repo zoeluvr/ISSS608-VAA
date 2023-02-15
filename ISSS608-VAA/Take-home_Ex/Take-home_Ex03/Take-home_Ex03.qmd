@@ -90,7 +90,7 @@ transform(unit_price = resale_price/floor_area_sqm)
 
 To better understand the data sets, the *check_model( )* is adopted to have a general overview of the data. The study assumes that the price of the resale property is related to floor area and remaining release. Hence the data is tested to see if it can directly conduct variance analysis and linear regression modeling.
 
-From the above normality test, the price of the resale property is not satisfied with normal distribution neither with the floor area nor the remaining lease. Therefore, linear regression modeling cannot be directly applied to the analysis of the resale property price.
+From the following normality test, the price of the resale property is not satisfied with normal distribution neither with the floor area nor the remaining lease. Therefore, linear regression modeling cannot be directly applied to the analysis of the resale property price.
 
 ```{r}
 model_floorarea <- lm(resale_price ~ floor_area_sqm, data = re)
@@ -144,7 +144,7 @@ ggbarstats(re,
 
 ### 3.2.2 Price by Lease Commence Date and Towns
 
-The dot plot created by *plot_ly( )* shows the relationship between the lease commence date and unit price. From the interactive tooltip label on hovering, we can tell the town and flat type the property belongs to and have some insights into their relationship.
+The dot plot created by *plot_ly( )* shows the relationship between the lease commence date and unit price. From the interactive tooltip label on hovering, we can tell the town and flat types the property belong to and have some insights into their relationship.
 
 From the plot, we can see the new flat often sells at higher prices, but there are still many exceptions. For example, some old 3 rooms can have high unit prices because of their location. To specify the influence of locations, the line chart of the price created by *giraffe( )* in different towns is shown. Additionally, many rooms at a higher level are much more expensive than their counterparts, which indicates the story can have a tremendous impact on the unit price of resale houses.
 
@@ -190,7 +190,7 @@ ggcorrplot.args = list(outline.color = "black",
 
 ```
 
-After the correlogram, clustering is adopted to categorize different house types. By using *fviz_nbclust( )*, it can be seen the best number for clustering is 4. K-means (introduce "floor_area_sqm","resale_price","unit_price") is used to do modeling and present the statistics in terms of "town"and "storey_bins"in a table. The summarized features of four types of properties are listed in the table, and a dot plot is created to visualize the clustering of different categorizations by using *ggplot2( ).*
+After the correlogram, clustering is adopted to categorize different house types. By using *fviz_nbclust( )*, it can be seen the best number for clustering is 4. K-means (introduce "floor_area_sqm", "resale_price", "unit_price") is used to do modeling and present the statistics in terms of "town"and "storey_bins"in a table. The summarized features of four types of properties are listed in the table, and a dot plot is created to visualize the clustering of different categorizations by using *ggplot2( ).*
 
 ```{r}
 dim(re)
@@ -229,7 +229,7 @@ p_cluster + scale_colour_manual(values = c("skyblue2", "orange", "green3","red")
 
 # 4. Learning Point
 
-In this take-home exercise, interactive and statistic visualization R Packages, such as plotly, ggiraph, ggstatsplot are applied to uncover the patterns of resale prices. My key takeaways are:
+In this take-home exercise, interactive and statistic visualization R packages, such as plotly, ggiraph, ggstatsplot are applied to uncover the patterns of resale prices. My key takeaways are:
 
 Rstudio is a powerful tool when doing interactive visualizations, which provides more options for audience to select details for customized viewing. In this assignment, I find it difficult to integrate various information together as there are many elements that should be taken into consideration. Additionally, if a project contains data modeling, a special design must be adopted to make the graph both lively and understandable.
 
