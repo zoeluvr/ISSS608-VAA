@@ -16,7 +16,7 @@ Installing and loading R packages
 Two packages will be installed and loaded. They are: tidyverse and ggiraph
 
 ```{r}
-pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, tidyverse)
+pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, gganimate, gifski, gapminder, tidyverse)
 ```
 
 importing data
@@ -45,7 +45,8 @@ girafe(
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
   geom_dotplot_interactive(              
-    aes(data_id = CLASS),              
+    aes(tooltip = CLASS, 
+        data_id = CLASS),              
     stackgroups = TRUE,                  
     binwidth = 1,                        
     method = "histodot") + scale_y_continuous(NULL,               
@@ -54,10 +55,82 @@ p <- ggplot(data=exam_data,
 girafe(                                  
   ggobj = p,                             
   width_svg = 6,                         
-  height_svg = 6*0.618,
-  options = list(                        
+  height_svg = 6*0.618, options = list(                        
     opts_hover(css = "fill: #202020;"),  
     opts_hover_inv(css = "opacity:0.2;") 
-  )                                        
-)                                        
+  ) )                                       
 ```
+
+```{r}
+exam_data$onclick <- sprintf("window.open(\"%s%s\")",
+"https://www.moe.gov.sg/schoolfinder?journey=Primary%20school",
+as.character(exam_data$ID))
+
+p <- ggplot(data=exam_data, 
+       aes(x = MATHS)) +
+  geom_dotplot_interactive(              
+    aes(onclick = onclick),              
+    stackgroups = TRUE,                  
+    binwidth = 1,                        
+    method = "histodot") +               
+  scale_y_continuous(NULL,               
+                     breaks = NULL)
+girafe(                                  
+  ggobj = p,                             
+  width_svg = 6,                         
+  height_svg = 6*0.618)                                        
+```
+
+```{r}
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS,
+        text = ~paste("Student ID:", ID,     
+                      "<br>Class:", CLASS),  
+        color = ~RACE, 
+        colors = "Set1") %>%
+  layout(title = 'English Score versus Maths Score ', 
+         xaxis = list(range = c(0, 100)),             
+         yaxis = list(range = c(0, 100)))
+```
+
+```{r}
+d <- highlight_key(exam_data)  
+p1 <- ggplot(data=d, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+p2 <- ggplot(data=d, 
+            aes(x = MATHS,
+                y = SCIENCE)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+subplot(ggplotly(p1),
+        ggplotly(p2))
+```
+
+```{r}
+DT::datatable(exam_data, class= "compact")
+```
+```{r}
+d <- highlight_key(exam_data) 
+p <- ggplot(d, 
+            aes(ENGLISH, 
+                MATHS)) + 
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+gg <- highlight(ggplotly(p),        
+                "plotly_selected")  
+
+crosstalk::bscols(gg,               
+                  DT::datatable(d), 
+                  widths = 5)        
+```
+
+```{r}
