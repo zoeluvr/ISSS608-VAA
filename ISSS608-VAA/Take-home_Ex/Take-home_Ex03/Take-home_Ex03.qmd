@@ -215,7 +215,7 @@ aggregate(re[c("floor_area_sqm","resale_price","unit_price")], list(re.kmeans$cl
 ```
 
 | No. | Size   | Price          | Storage                                           | Location Distribution                          |
-|---------|---------|--------------|--------------|------------------|
+|-----|--------|----------------|---------------------------------------------------|------------------------------------------------|
 | 1   | Middle | Moderate       | Mainly low level and middle level, few high level | Punggol, Woodlands, Choa Chu Kang              |
 | 2   | Small  | Cost-effective | Mainly low level                                  | Yishun, Bedok, Woodlands                       |
 | 3   | Large  | Pricey         | Mainly high level                                 | Central Area, Bukit Merah, Kallang, Queenstown |
