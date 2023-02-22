@@ -108,7 +108,7 @@ balance_data <- mutate(balance_data, BOT = `Export_Value(KUSD)` - `Import_Value(
 ```{r}
 balance_data %>% 
   group_by(Region) %>% 
-  filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>% 
+  filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
   ungroup() %>% 
   na.omit() %>% 
   ggplot() +
@@ -129,14 +129,42 @@ balance_data %>%
     panel.border = element_blank()
     ) +
     scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b%y") +
-  ggtitle("Singapore's Balance of Trade by Continent (Jan 2020 to Dec 2022)")
+  ggtitle("Singapore's Balance of Trade by Country (Jan 2020 to Dec 2022)")
+```
+```{r}
+top5 <- imp_con %>% 
+  group_by(Region) %>% 
+  filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
+  summarise("Total_Import" = sum(`Import_Value(KUSD)`)) %>% 
+  ungroup() %>% 
+  arrange(desc(Total_Import))
+top5 <- top5$Region[1:5]
+```
+
+```{r}
+imp$month <- factor(month(imp$`Import_Date`), 
+                    levels=1:12, 
+                    labels=month.abb, 
+                    ordered=TRUE) 
+imp$year <- year(ymd(imp$`Import_Date`))
+```
+
+```{r}
+ch_import <- imp %>% 
+  ggplot() +
+  geom_line(aes(x=year, 
+                y=`Mainland China`, 
+                group=month), 
+            colour="black") +
+  facet_grid(~month)
+ch_import
 ```
 
 ```{r}
 imp_slopegraph <- imp_con %>% 
   group_by(Region,Import_Year) %>% 
   filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>% 
-  summarise("Total_Import" = sum(Import_Value)) %>% 
+  summarise("Total_Import" = sum(Import_Value(KUSD))) %>% 
   ungroup() 
 ```
 
