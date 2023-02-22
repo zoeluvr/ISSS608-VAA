@@ -1,0 +1,152 @@
+---
+title: "Take-home_Ex04_draft"
+---
+
+```{r}
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, tidyverse)
+```
+
+```{r}
+impodata <- read_xlsx("data/merc.xlsx",
+                       sheet = "T1",
+                       range = cell_rows(10:128)) %>%
+  select(`Data Series`, contains(c("2020", "2021", "2022"))) 
+
+expodata <- read_xlsx("data/merc.xlsx",
+                       sheet = "T2",
+                       range = cell_rows(10:100)) %>%
+  select(`Data Series`, contains(c("2020", "2021", "2022"))) 
+```
+
+```{r}
+impodata_pivot <- impodata %>% 
+  pivot_longer( 
+     cols = `2020 Dec`:`2022 Jan`, 
+     names_to = "Import_Date",
+     values_transform = as.numeric,
+     values_to = "Import_Value") %>% 
+  pivot_wider(        
+    names_from = `Data Series`,
+    values_from = Import_Value
+  ) 
+
+expodata_pivot <- expodata %>% 
+  pivot_longer( 
+     cols = `2020 Dec`:`2022 Jan`, 
+     names_to = "Export_Date",
+     values_transform = as.numeric,
+     values_to = "Export_Value") %>% 
+  pivot_wider(        
+    names_from = `Data Series`,
+    values_from = Export_Value
+  ) 
+```
+
+```{r}
+impodata_pivot$`Import_Date` <- ym(impodata_pivot$`Import_Date`)
+expodata_pivot$`Export_Date` <- ym(expodata_pivot$`Export_Date`)
+```
+
+```{r}
+imp <- impodata_pivot %>% 
+  mutate_at(vars(contains('Million Dollars')), ~ (. *1000)) 
+exp <- expodata_pivot %>% 
+  mutate_at(vars(contains('Million Dollars')), ~ (. *1000)) 
+```
+
+```{r}
+colnames(imp) <- gsub(" (Million Dollars)", "", colnames(imp), fixed = TRUE)
+colnames(imp) <- gsub(" (Thousand Dollars)", "", colnames(imp), fixed = TRUE)
+colnames(exp) <- gsub(" (Million Dollars)", "", colnames(exp), fixed = TRUE)
+colnames(exp) <- gsub(" (Thousand Dollars)", "", colnames(exp), fixed = TRUE)
+```
+
+```{r}
+imp_con <- imp %>% 
+  pivot_longer(-Import_Date, 
+               names_to = "Region",
+               values_to = "Import_Value(KUSD)") 
+```
+
+```{r}
+imp_con$Import_Month <- factor(month(imp_con$Import_Date), 
+                    levels=1:12, 
+                    labels=month.abb, 
+                    ordered=TRUE) 
+imp_con$Import_Year <- year(ymd(imp_con$Import_Date))
+```
+
+```{r}
+exp_con <- exp %>% 
+  pivot_longer(-Export_Date, 
+               names_to = "Region",
+               values_to = "Export_Value(KUSD)") 
+```
+
+```{r}
+exp_con$Export_Month <- factor(month(exp_con$Export_Date), 
+                    levels=1:12, 
+                    labels=month.abb, 
+                    ordered=TRUE) 
+exp_con$Export_Year <- year(ymd(exp_con$Export_Date))
+```
+
+```{r}
+balance_data <- imp_con %>% 
+  inner_join(exp_con, by = c("Region" = "Region", "Import_Date" = "Export_Date", "Import_Month" = "Export_Month", "Import_Year" = "Export_Year"))
+```
+
+```{r}
+  names(balance_data) <- c("Date", "Region", "Import_Value(KUSD)", "Month", "Year", "Export_Value(KUSD)")
+```
+
+```{r}
+balance_data <- mutate(balance_data, BOT = `Export_Value(KUSD)` - `Import_Value(KUSD)`)  
+```
+
+
+```{r}
+balance_data %>% 
+  group_by(Region) %>% 
+  filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>% 
+  ungroup() %>% 
+  na.omit() %>% 
+  ggplot() +
+  geom_horizon(aes(x = Date, y=BOT), 
+               origin = "midpoint", 
+               horizonscale = 6)+
+  facet_grid(`Region`~.) +
+    theme_few() +
+  scale_fill_hcl(palette = 'RdBu') +
+  theme(panel.spacing.y=unit(0, "lines"), strip.text.y = element_text(
+    size = 5, angle = 0, hjust = 0),
+    legend.position = 'none',
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size=7),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.border = element_blank()
+    ) +
+    scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b%y") +
+  ggtitle("Singapore's Balance of Trade by Continent (Jan 2020 to Dec 2022)")
+```
+
+```{r}
+imp_slopegraph <- imp_con %>% 
+  group_by(Region,Import_Year) %>% 
+  filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>% 
+  summarise("Total_Import" = sum(Import_Value)) %>% 
+  ungroup() 
+```
+
+```{r}
+import_slope <- imp_slopegraph %>%
+  mutate(Import_Year = factor(Import_Year, ordered = TRUE, levels = c(2020,2021,2022))) %>%
+  filter(Import_Year %in% c(2020, 2021, 2022)) %>%
+  newggslopegraph(Import_Year, Total_Import, Region,
+                Title = "Import Value of 5 Continents",
+                SubTitle = "2020-2022",
+                Caption = "Using newggslopegraph")
+import_slope
+```
