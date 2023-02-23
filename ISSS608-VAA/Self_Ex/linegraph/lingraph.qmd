@@ -1,0 +1,59 @@
+---
+title: "linegraph"
+---
+
+```{r}
+pacman::p_load(ggh4x, geofacet, tidyverse)
+```
+
+```{r}
+animal_rescues <- readr::read_csv(
+  "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-06-29/animal_rescues.csv"
+  ) %>% 
+  # Capitalize the type of animal
+mutate(animal_group_parent = str_to_sentence(animal_group_parent))
+```
+
+```{r}
+borough_names <- gb_london_boroughs_grid %>% 
+  select(borough_code = code_ons, name)
+```
+
+```{r}
+rescues_borough <- animal_rescues %>% 
+  # Keep rescues that happend before 2021
+  filter(cal_year < 2021) %>% 
+  # We're interested on whether it is a Cat or another type of animal.
+  mutate(animal_group_parent = if_else(animal_group_parent == "Cat", "Cat", "Not_Cat"))  %>% 
+  # Count the number of rescues per year, borough, and type of animal
+  count(cal_year, borough_code, animal_group_parent) %>% 
+  # Make the dataset wider.
+  # * One column for the number of cat rescues
+  # * Another column for the number of other animal rescues
+  pivot_wider(names_from = animal_group_parent, values_from = n) %>% 
+  # Merge the data with the info about the grid layout
+  left_join(borough_names) %>% 
+  # Drop entries with missing name
+  filter(!is.na(name)) 
+```
+
+```{r}
+plt <- ggplot(rescues_borough, aes(x = cal_year)) +
+  geom_line(aes(y = Cat, color = "cats")) +
+  geom_line(aes(y = Not_Cat, color = "other")) +
+  stat_difference(aes(ymin = Not_Cat, ymax = Cat), alpha = 0.3) +
+  facet_wrap(~name, ncol = 2)
+plt
+```
+
+```{r}
+specie <- c(rep("sorgho" , 3) , rep("poacee" , 3) , rep("banana" , 3) , rep("triticum" , 3) )
+condition <- rep(c("normal" , "stress" , "Nitrogen") , 4)
+value <- abs(rnorm(12 , 0 , 15))
+data <- data.frame(specie,condition,value)
+```
+
+```{r}
+ggplot(data, aes(fill=condition, y=value, x=specie)) + 
+    geom_bar(position="stack", stat="identity")
+```

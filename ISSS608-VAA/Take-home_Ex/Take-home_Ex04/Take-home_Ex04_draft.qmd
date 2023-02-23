@@ -3,7 +3,7 @@ title: "Take-home_Ex04_draft"
 ---
 
 ```{r}
-pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, tidyverse)
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, tidyverse)
 ```
 
 ```{r}
@@ -101,9 +101,10 @@ balance_data <- imp_con %>%
 ```
 
 ```{r}
-balance_data <- mutate(balance_data, BOT = `Export_Value(KUSD)` - `Import_Value(KUSD)`)  
+balance_data <- balance_data %>% 
+  mutate(BOT = `Export_Value(KUSD)` - `Import_Value(KUSD)`)  %>% 
+  mutate(Trade_Volume = `Export_Value(KUSD)` + `Import_Value(KUSD)`)
 ```
-
 
 ```{r}
 balance_data %>% 
@@ -131,15 +132,64 @@ balance_data %>%
     scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b%y") +
   ggtitle("Singapore's Balance of Trade by Country (Jan 2020 to Dec 2022)")
 ```
+
 ```{r}
-top5 <- imp_con %>% 
+top6_volume <- balance_data %>% 
   group_by(Region) %>% 
   filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
-  summarise("Total_Import" = sum(`Import_Value(KUSD)`)) %>% 
+  summarise("Total_Volume" = sum(`Trade_Volume`)) %>% 
   ungroup() %>% 
-  arrange(desc(Total_Import))
-top5 <- top5$Region[1:5]
+  arrange(desc(Total_Volume))
+top6_volume <- top6_volume$Region[1:6]
 ```
+
+```{r}
+line_top6 <- balance_data %>% 
+  group_by(Region) %>% 
+  filter(Region %in% top6_volume) %>% 
+  ungroup() %>% 
+  mutate("Import_Value(MUSD)" = `Import_Value(KUSD)`/1000) %>% 
+  mutate("Export_Value(MUSD)" = `Export_Value(KUSD)`/1000)
+```
+
+```{r}
+line_top6p <-
+  ggplot(line_top6, aes(x = Date)) +
+  geom_line(aes(y = `Export_Value(MUSD)`, color = "Export")) +
+  geom_line(aes(y = `Import_Value(MUSD)`, color = "Import")) +
+  facet_wrap(~Region, ncol = 3) + 
+  labs(x = "Time", y = "Trade Value (MUSD)", 
+     title = "Monthly Import and Export Value of Singapore's Top Trading Partners (2020-2022)") +
+  theme(axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 5),
+        plot.title = element_text(hjust = 0.5),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 6) )
+line_top6p
+```
+
+```{r}
+bar_top6 <- line_top6 %>% 
+  select(Region, Year, `Export_Value(MUSD)`, `Import_Value(MUSD)`) %>% 
+  pivot_longer(cols = `Export_Value(MUSD)`:`Import_Value(MUSD)`, names_to = "Category") %>% 
+  group_by(Region, Year, Category) %>% 
+  summarise("Value" = sum(`value`)) %>% 
+  ungroup()
+```
+
+```{r}
+bar_top6p <-
+  ggplot(bar_top6, aes(fill=Category, y=Value, x=Year)) + 
+    geom_bar(position="stack", stat="identity") +
+  facet_wrap(~Region,ncol = 6) +
+  labs( title = "Yearly Import and Export Value of Singapore's Top Trading Partners (2020-2022)") +
+  theme(axis.text.x = element_text(size = 5),
+        axis.text.y = element_text(size = 5))
+
+ggplotly(bar_top6p)
+```
+
 
 ```{r}
 imp$month <- factor(month(imp$`Import_Date`), 
@@ -158,23 +208,4 @@ ch_import <- imp %>%
             colour="black") +
   facet_grid(~month)
 ch_import
-```
-
-```{r}
-imp_slopegraph <- imp_con %>% 
-  group_by(Region,Import_Year) %>% 
-  filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>% 
-  summarise("Total_Import" = sum(Import_Value(KUSD))) %>% 
-  ungroup() 
-```
-
-```{r}
-import_slope <- imp_slopegraph %>%
-  mutate(Import_Year = factor(Import_Year, ordered = TRUE, levels = c(2020,2021,2022))) %>%
-  filter(Import_Year %in% c(2020, 2021, 2022)) %>%
-  newggslopegraph(Import_Year, Total_Import, Region,
-                Title = "Import Value of 5 Continents",
-                SubTitle = "2020-2022",
-                Caption = "Using newggslopegraph")
-import_slope
 ```
