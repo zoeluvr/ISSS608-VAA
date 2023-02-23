@@ -3,7 +3,7 @@ title: "Take-home_Ex04_draft"
 ---
 
 ```{r}
-pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, tidyverse)
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, gganimate, tidyverse)
 ```
 
 ```{r}
@@ -107,6 +107,8 @@ balance_data <- balance_data %>%
 ```
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 12
 balance_data %>% 
   group_by(Region) %>% 
   filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
@@ -131,6 +133,34 @@ balance_data %>%
     ) +
     scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b%y") +
   ggtitle("Singapore's Balance of Trade by Country (Jan 2020 to Dec 2022)")
+```
+```{r}
+bubble_data <- balance_data %>% 
+  group_by(Region) %>% 
+  filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
+  ungroup() %>% 
+  na.omit() %>% 
+  select(Region, Year, `Import_Value(KUSD)`, `Export_Value(KUSD)`, Trade_Volume) %>% 
+  mutate("Import_Value(MUSD)" = `Import_Value(KUSD)`/1000) %>% 
+  mutate("Export_Value(MUSD)" = `Export_Value(KUSD)`/1000) %>% 
+  mutate("Trade_Volume" = Trade_Volume/1000) %>% 
+  mutate_each_(funs(factor(.)), "Region") %>% 
+  mutate(Year = as.integer(Year))
+```
+
+```{r}
+#| fig-width: 12
+#| fig-height: 12
+ggplot(bubble_data, aes(x = `Import_Value(MUSD)`, 
+                        y = `Export_Value(MUSD)`,
+                      size = Trade_Volume, 
+                      colour = Region)) +
+  geom_point(alpha = 0.7, 
+             show.legend = FALSE) +
+  scale_size(range = c(2, 12)) +
+  labs(title = "Singapore's Merchandise Trade Performance with Trading Partners \n Year: {frame_time}") +
+  transition_time(Year) +       
+  ease_aes('linear')            
 ```
 
 ```{r}
@@ -167,8 +197,8 @@ line_top6p <-
         plot.title = element_text(hjust = 0.5),
         legend.title = element_text(size = 8),
         legend.text = element_text(size = 6) )
-line_top6p
 ```
+
 
 ```{r}
 bar_top6 <- line_top6 %>% 
@@ -190,6 +220,8 @@ bar_top6p <-
 ```
 
 ```{r}
+#| fig-width: 12
+#| fig-height: 12
 subplot(bar_top6p, line_top6p, nrows = 2)
 ```
 
