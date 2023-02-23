@@ -3,7 +3,7 @@ title: "Take-home_Ex04_draft"
 ---
 
 ```{r}
-pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, tidyverse)
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, tidyverse)
 ```
 
 ```{r}
@@ -158,6 +158,7 @@ line_top6p <-
   geom_line(aes(y = `Export_Value(MUSD)`, color = "Export")) +
   geom_line(aes(y = `Import_Value(MUSD)`, color = "Import")) +
   facet_wrap(~Region, ncol = 3) + 
+  stat_difference(aes(ymin = `Import_Value(MUSD)`, ymax = `Export_Value(MUSD)`), alpha = 0.3) +
   labs(x = "Time", y = "Trade Value (MUSD)", 
      title = "Monthly Import and Export Value of Singapore's Top Trading Partners (2020-2022)") +
   theme(axis.ticks = element_blank(),
@@ -186,10 +187,11 @@ bar_top6p <-
   labs( title = "Yearly Import and Export Value of Singapore's Top Trading Partners (2020-2022)") +
   theme(axis.text.x = element_text(size = 5),
         axis.text.y = element_text(size = 5))
-
-ggplotly(bar_top6p)
 ```
 
+```{r}
+subplot(bar_top6p, line_top6p, nrows = 2)
+```
 
 ```{r}
 imp$month <- factor(month(imp$`Import_Date`), 
