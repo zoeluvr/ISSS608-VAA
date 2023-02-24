@@ -13,7 +13,7 @@ format: html
 ```{r}
 #| code-fold: true
 #| code-summary: "Show"
-pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, gganimate, tidyverse)
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, gganimate, hrbrthemes, tidyverse)
 ```
 
 ```{r}
@@ -275,6 +275,32 @@ grid.arrange(import_slope, export_slope, ncol = 2)
 ```{r}
 #| code-fold: true
 #| warning: FALSE
+bot_line <- balance_data %>% 
+  select(Region, Date, BOT) %>% 
+  group_by(Region) %>%
+  filter(Region == c("America", "Europe", "Asia", "Africa", "Oceania")) %>%
+  mutate("BOT" = `BOT`/1000) %>% 
+  ungroup()
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show"
+bot_line %>% 
+  ggplot( aes(x=Date, y=BOT, group=Region, color=Region)) +
+    geom_line() +
+    geom_point() +
+   geom_hline(yintercept=0, color="orange", size=.5) +
+    scale_color_viridis(discrete = TRUE) +
+    ggtitle("Singapore's Balance of Trade from 5 Continents from 2022-2022") +
+    theme_ipsum() +
+    ylab("Balance of Trade (Million USD)") +
+    transition_reveal(Date)
+```
+
+```{r}
+#| code-fold: true
+#| warning: FALSE
 cycle_data <- balance_data %>% 
   select(Region, Month, Year, BOT) %>% 
   group_by(Region) %>% 
@@ -299,6 +325,7 @@ ch_import <- cycle_data %>%
                 group=Month), 
             colour="black") +
   facet_wrap(~Month, ncol = 6) +
+  geom_hline(yintercept=0, color="grey", size=.5) +
     geom_hline(aes(yintercept=avgvalue), 
              data=hline.data, 
              linetype=6, 

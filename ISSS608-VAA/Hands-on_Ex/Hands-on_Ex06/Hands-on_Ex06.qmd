@@ -182,6 +182,7 @@ rice %>%
 averp <- read_csv("data/AVERP.csv") %>%
   mutate(`Date` = dmy(`Date`))
 ```
+
 ```{r}
 averp %>% 
   filter(Date >= "2018-01-01") %>%
