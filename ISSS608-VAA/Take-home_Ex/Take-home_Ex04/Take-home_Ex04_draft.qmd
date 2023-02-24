@@ -12,13 +12,11 @@ format: html
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, gganimate, hrbrthemes, tidyverse)
 ```
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 impodata <- read_xlsx("data/merc.xlsx",
                        sheet = "T1",
                        range = cell_rows(10:128)) %>%
@@ -32,7 +30,6 @@ expodata <- read_xlsx("data/merc.xlsx",
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 impodata_pivot <- impodata %>% 
   pivot_longer( 
      cols = `2020 Dec`:`2022 Jan`, 
@@ -72,7 +69,6 @@ colnames(exp) <- gsub(" (Thousand Dollars)", "", colnames(exp), fixed = TRUE)
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 imp_con <- imp %>% 
   pivot_longer(-Import_Date, 
                names_to = "Region",
@@ -99,7 +95,6 @@ exp_con$Export_Year <- year(ymd(exp_con$Export_Date))
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 balance_data <- imp_con %>% 
   inner_join(exp_con, by = c("Region" = "Region", "Import_Date" = "Export_Date", "Import_Month" = "Export_Month", "Import_Year" = "Export_Year"))
 
@@ -114,7 +109,7 @@ balance_data <- balance_data %>%
 #| fig-width: 12
 #| fig-height: 10
 #| code-fold: true
-#| code-summary: "Show"
+#| code-summary: "Plot"
 balance_data %>% 
   group_by(Region) %>% 
   filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
@@ -142,7 +137,6 @@ balance_data %>%
 ```
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 bubble_data <- balance_data %>% 
   group_by(Region) %>% 
   filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
@@ -158,7 +152,9 @@ bubble_data <- balance_data %>%
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
+#| code-summary: "Plot"
+#| fig-width: 9
+#| fig-height: 9
 ggplot(bubble_data, aes(x = `Import_Value(MUSD)`, 
                         y = `Export_Value(MUSD)`,
                       size = Trade_Volume, 
@@ -173,7 +169,6 @@ ggplot(bubble_data, aes(x = `Import_Value(MUSD)`,
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
 top6_volume <- balance_data %>% 
   group_by(Region) %>% 
   filter(Region !="Asia" & Region != "America" & Region != "Europe" & Region != "Africa" & Region != "Oceania" & Region != "European Union") %>% 
@@ -192,7 +187,7 @@ line_top6 <- balance_data %>%
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
+#| code-summary: "Plot"
 line_top6p <-
   ggplot(line_top6, aes(x = Date)) +
   geom_line(aes(y = `Export_Value(MUSD)`, color = "Export")) +
@@ -212,7 +207,7 @@ line_top6p <-
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
+#| code-summary: "Plot"
 bar_top6 <- line_top6 %>% 
   select(Region, Year, `Export_Value(MUSD)`, `Import_Value(MUSD)`) %>% 
   pivot_longer(cols = `Export_Value(MUSD)`:`Import_Value(MUSD)`, names_to = "Category") %>% 
@@ -230,8 +225,10 @@ bar_top6p <-
 ```
 
 ```{r}
-#| fig-width: 13
-#| fig-height: 10
+#| code-fold: true
+#| code-summary: "Plot"
+#| fig-width: 12
+#| fig-height: 12
 subplot(bar_top6p, line_top6p, nrows = 2)
 ```
 ```{r}
@@ -285,14 +282,14 @@ bot_line <- balance_data %>%
 
 ```{r}
 #| code-fold: true
-#| code-summary: "Show"
+#| code-summary: "Plot"
 bot_line %>% 
   ggplot( aes(x=Date, y=BOT, group=Region, color=Region)) +
     geom_line() +
     geom_point() +
    geom_hline(yintercept=0, color="orange", size=.5) +
     scale_color_viridis(discrete = TRUE) +
-    ggtitle("Singapore's Balance of Trade from 5 Continents from 2022-2022") +
+    ggtitle("Singapore's Balance of Trade from 5 Continents") +
     theme_ipsum() +
     ylab("Balance of Trade (Million USD)") +
     transition_reveal(Date)
@@ -317,7 +314,7 @@ hline.data <- cycle_data %>%
 
 ```{r}
 #| code-fold: true
-#| warning: FALSE
+#| code-summary: "Plot"
 ch_import <- cycle_data %>% 
   ggplot() +
   geom_line(aes(x=Year, 
