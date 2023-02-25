@@ -16,7 +16,7 @@ Installing and loading R packages
 Two packages will be installed and loaded. They are: tidyverse and ggiraph
 
 ```{r}
-pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, gganimate, gifski, gapminder, tidyverse)
+pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, gganimate, gifski, gapminder, readxl, tidyverse)
 ```
 
 importing data

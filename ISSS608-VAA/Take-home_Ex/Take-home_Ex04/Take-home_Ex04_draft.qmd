@@ -22,7 +22,7 @@ Merchandise Trade provided by the Department of Statistics, Singapore (DOS) will
 
 ## 3.1 Install and Load Packages
 
-Use ***`paccman::`*** to install required R packages and load them onto RStudio environment.
+Use `paccman::` to install required R packages and load them onto RStudio environment.
 
 ```{r}
 #| code-fold: true
