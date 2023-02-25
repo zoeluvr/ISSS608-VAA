@@ -1,5 +1,5 @@
 ---
-title: "Take-home_Ex04_draft"
+title: "Take-home Exercise04"
 subtitle: "Exploration into Singapore's Trade Partners"
 author: "Luo Zheng" 
 date: "`r Sys.Date()`"
@@ -10,10 +10,28 @@ execute:
 format: html
 ---
 
+# 1. Task
+
+This take-home exercise requires uncovering the impact of COVID-19, global economics, and political dynamics on Singapore's bilateral trade (i.e. Import, Export, and Trade Balance). The exercise should focus on the appropriate analytical visualization techniques learned in **Lesson 6: It's About Time** and appropriate interactive techniques are encouraged to enhance users' data discovery experiences.
+
+# 2. Data Source
+
+Merchandise Trade provided by the Department of Statistics, Singapore (DOS) will be used in this take-home exercise, and the study period should be between January 2020 to December 2022. You can see more detail about the dataset [here](https://tablebuilder.singstat.gov.sg/statistical-tables/downloadMultiple/1JmxrUUC_0a26wjZN4FFXw).
+
+# 3. Data preparation
+
+## 3.1 Install and Load Packages
+
+Use ***`paccman::`*** to install required R packages and load them onto RStudio environment.
+
 ```{r}
 #| code-fold: true
 pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table, CGPfunctions, ggHoriPlot, ggrepel, ggiraph, plotly, ggh4x, patchwork, gganimate, hrbrthemes, tidyverse)
 ```
+
+## 3.2 Importing Data
+
+The raw dataset is imported using read_xlsx and here we need sheets T1 and T2. The range is set to exclude unwanted information and data from 2020, 2021, and 2022 are selected.
 
 ```{r}
 #| code-fold: true
@@ -27,6 +45,10 @@ expodata <- read_xlsx("data/merc.xlsx",
                        range = cell_rows(10:100)) %>%
   select(`Data Series`, contains(c("2020", "2021", "2022"))) 
 ```
+
+## 3.3 Data Wrangling
+
+The original dataset is wide with each date as a column. In data wrangling, the date is arranged in a row by using `pivot_longer( )` for further analysis. To unify the unit, `mute_at( )` is adopted to convert variables numbered in millions to thousands. In the data frame, `ymd( )`, `month( )`, `year( )` are to create new fields of date.
 
 ```{r}
 #| code-fold: true
@@ -66,6 +88,7 @@ colnames(exp) <- gsub(" (Million Dollars)", "", colnames(exp), fixed = TRUE)
 colnames(exp) <- gsub(" (Thousand Dollars)", "", colnames(exp), fixed = TRUE)
 ```
 
+The `inner_join( )` is to combine the data for import and export together to create the trade balance table. Mutate the new column for the balance of trade and the total trade volume.
 
 ```{r}
 #| code-fold: true
@@ -92,6 +115,13 @@ exp_con$Export_Month <- factor(month(exp_con$Export_Date),
 exp_con$Export_Year <- year(ymd(exp_con$Export_Date))
 ```
 
+# 4. Visual analytics
+
+In this part, the patterns of Singapore's bilateral trade will be revealed by using static and interactive visualization techniques.
+
+## 4.1 Visualization of Trade Partners by Country
+
+The horizon graph is plotted by `geom_horizon` to show the general trend and distribution of Singapore's bilateral trade, where blue shows the trade surplus and red is the trade deficit. From the graph, we can see that red and blue are almost equally distributed which indicates the export volume and import volume are close to each other. Some countries (e.g., Australia, and Yemen) can see a relatively constant trend of trade surplus or deficit to Singapore.
 
 ```{r}
 #| code-fold: true
@@ -135,6 +165,9 @@ balance_data %>%
     scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b%y") +
   ggtitle("Singapore's Balance of Trade by Country (Jan 2020 to Dec 2022)")
 ```
+
+An animated bubble plot is created to show the relationship between the import and export by country. The size of the bubble presents the trade volume of different countries, and by using `transition_time( )`, the time change is also shown in the graph. From the animated plot, we can see that Singapore's major trade partners include 6-7 countries, with one of them importing a large amount from Singapore in the targeted period. With the trade gradually recovering from the COVID-19 pandemic, the total trade volume increases every year.
+
 ```{r}
 #| code-fold: true
 bubble_data <- balance_data %>% 
@@ -166,6 +199,8 @@ ggplot(bubble_data, aes(x = `Import_Value(MUSD)`,
   transition_time(Year) +       
   ease_aes('linear')            
 ```
+
+More detail can be seen in the combination of two interactive plots, where six of Singapore's major trade partners are listed, namely mainland China, Malaysia, the USA, Hong Kong, Indonesia, and Taiwan. The plot is created by using `ggplotly` and the audience can compare the total year value and changes by month.
 
 ```{r}
 #| code-fold: true
@@ -204,7 +239,6 @@ line_top6p <-
         legend.text = element_text(size = 6) )
 ```
 
-
 ```{r}
 #| code-fold: true
 #| code-summary: "Plot"
@@ -231,6 +265,11 @@ bar_top6p <-
 #| fig-height: 12
 subplot(bar_top6p, line_top6p, nrows = 2)
 ```
+
+## 4.2 Visualization of Trade by Continent
+
+After analyzing the trade by country, the trade of continents is given in this part. Instead of using a line graph, two slopegraphs created by `newggslopegraph( )` is here to compare changes in the import and export of continent by year. From the graph, we can see Singapore's trade volume mainly comes from Asia and there is an overall growth for all continents in export and import, except for America's export value.
+
 ```{r}
 #| code-fold: true
 #| warning: FALSE
@@ -249,9 +288,9 @@ exp_slopegraph <- balance_data %>%
   ungroup()
 ```
 
-
 ```{r}
 #| code-fold: true
+#| code-summary: "Plot"
 #| warning: FALSE
 import_slope <- imp_slopegraph %>%
   mutate(Year = factor(Year, ordered = TRUE, levels = c(2020,2021,2022))) %>%
@@ -268,6 +307,8 @@ export_slope <- exp_slopegraph %>%
                 Caption = "(million USD)")
 grid.arrange(import_slope, export_slope, ncol = 2)
 ```
+
+The animated line graph is plotted by `transition_reveal( )` to show the changes in Singapore's trade balance of five continents. The reference line is set as zero and we can see that Europe's import to Singapore accounts for a larger part and Africa's import and export are also equal in 2020 and 2021. By comparing the slopegraph and animated graph, the situation becomes clearer.
 
 ```{r}
 #| code-fold: true
@@ -295,6 +336,10 @@ bot_line %>%
     transition_reveal(Date)
 ```
 
+## 4.3 Visualization of Trade from China in Cycle Plot
+
+The line graph compares the same period of the previous year to see how the trade from mainland China changed. The red reference line is to show the average trade balance value and the zero value. From the line graph, we can see that there is a similar trend in different quarters.
+
 ```{r}
 #| code-fold: true
 #| warning: FALSE
@@ -310,7 +355,6 @@ hline.data <- cycle_data %>%
   group_by(Month) %>%
   summarise(avgvalue = mean(`Mainland_China`))
 ```
-
 
 ```{r}
 #| code-fold: true
@@ -336,3 +380,11 @@ ch_import <- cycle_data %>%
         axis.text.y = element_text(size = 5))
 ggplotly(ch_import)
 ```
+
+# 5. Learning Point
+
+In this take-home exercise, interactive and static graphs are created to visualize time. My key takeaways are:
+
+The ggplot package provides a wide range of plots to visualize data, but before plotting, the data frame is required to be arranged. In this exercise, the data is wrangled many times to fit in, and I need to improve my skills in handling data more efficiently to avoid repeating work and make the code tidy.
+
+The animation in R packages is a powerful tool to display changes in time. The graph can be more straightforward for the audience to present the trend and facilitate future analysis. The fancy design, however, sometimes may become confused and the author needs to adopt it properly.
