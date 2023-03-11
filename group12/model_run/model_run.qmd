@@ -1,0 +1,47 @@
+---
+title: "model_run"
+---
+
+```{r}
+pacman::p_load(tidymodels, readxl, tidyverse)
+```
+
+```{r}
+loan_data <- read_xlsx("data/train_loan_data_0503ver.xlsx")
+```
+
+```{r}
+set.seed(1243)
+loan_split <- loan_data %>%
+select(c(1:18)) %>%
+initial_split(prop = .6,
+strata = good_bad_flag)
+
+training_data <- training(loan_split)
+testing_data <- testing(loan_split)
+```
+
+```{r}
+vfold_data <- vfold_cv(training_data,
+v = 3,
+repeats = 1,
+strata = good_bad_flag)
+vfold_data %>%
+mutate(df_ana = map(splits, analysis),
+df_ass = map(splits, assessment))
+```
+
+```{r}
+processed_data <- recipe(
+good_bad_flag ~ .,
+data = training_data) %>%
+step_log(all_outcomes()) %>%
+step_normalize(all_predictors(),
+-all_nominal()) %>%
+step_dummy(all_nominal())
+```
+
+```{r}
+prep(processed_data)
+```
+
